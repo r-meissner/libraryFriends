@@ -1,6 +1,6 @@
 import { Router } from "express";
-import validateJOI from "../middlewares/validateJoi";
-import { loginSchema, userSchema } from "../joi/schemas";
+import validateJOI from "../middlewares/validateJoi.js";
+import { loginSchema, userSchema } from "../joi/schemas.js";
 
 const authRouter = Router();
 

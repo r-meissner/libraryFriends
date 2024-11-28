@@ -1,6 +1,6 @@
 import { Router } from "express";
-import validateJOI from "../middlewares/validateJoi";
-import { bookSchema } from "../joi/schemas";
+import validateJOI from "../middlewares/validateJoi.js";
+import { bookSchema } from "../joi/schemas.js";
 
 const bookRouter = Router();
 

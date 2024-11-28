@@ -11,7 +11,7 @@ export const userSchema = Joi.object({
 
 export const bookSchema = Joi.object({
     title: Joi.string().required(),
-    author: Joi.string.required(),
+    author: Joi.string().required(),
     isbn: Joi.string().required(),
     pages: Joi.number(),
     publisher: Joi.string(),
