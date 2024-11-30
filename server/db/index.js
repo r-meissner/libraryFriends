@@ -1,17 +1,19 @@
-import { MongoClient } from 'mongodb';
+import mongoose from 'mongoose';
 
-const client = new MongoClient(process.env.MONGO_URI);
+const mongoUri = process.env.MONGO_URI;
 
-async function connectDB() {
-  try {
-    await client.connect();
-    console.log('Connected to MongoDB');
-  } catch (err) {
-    console.error('MongoDB connection error:', err);
-    process.exit(1);
-  }
-}
+const connectDB = async () => {
+    try {
+        await mongoose.connect(mongoUri, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            serverSelectionTimeoutMS: 30000, // Optional: Increase timeout
+        });
+        console.log("Connected to MongoDB");
+    } catch (err) {
+        console.error("MongoDB connection error:", err);
+        process.exit(1); // Exit process on failure
+    }
+};
 
-connectDB();
-
-export default client;
+export default connectDB;

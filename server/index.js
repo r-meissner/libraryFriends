@@ -5,6 +5,7 @@ import errorHandler from './middlewares/errorHandler.js'
 import userRouter from './routers/userRouter.js';
 import bookRouter from './routers/bookRouter.js';
 import authRouter from './routers/authRouter.js';
+import connectDB from './db/index.js';
 
 const app = express();
 
@@ -22,3 +23,5 @@ app.use(errorHandler);
 const port = process.env.PORT || 8000;
 
 app.listen(port, () => { console.log(`Server is running on port ${port}`)});
+
+connectDB();
