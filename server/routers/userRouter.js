@@ -1,10 +1,11 @@
 import { Router } from "express";
 import validateJOI from "../middlewares/validateJoi.js";
 import { userSchema } from "../joi/schemas.js";
+import { getUserById, searchUserByEmail } from "../controllers/user.js";
 
 const userRouter = Router();
 
-userRouter.route('/').get().post(validateJOI(userSchema));
-userRouter.route('/:id').get().put(validateJOI(userSchema)).delete();
+userRouter.route('/search').get(searchUserByEmail)
+userRouter.route('/:id').get(getUserById).put(validateJOI(userSchema))
 
 export default userRouter;
