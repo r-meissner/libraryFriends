@@ -5,9 +5,12 @@ import errorHandler from './middlewares/errorHandler.js'
 import userRouter from './routers/userRouter.js';
 import bookRouter from './routers/bookRouter.js';
 import authRouter from './routers/authRouter.js';
+import connectDB from './db/index.js';
 import cookieParser from 'cookie-parser';
 
 const app = express();
+
+connectDB();
 
 app.use(cors());
 app.use(express.json());
