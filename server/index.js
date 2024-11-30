@@ -5,12 +5,14 @@ import errorHandler from './middlewares/errorHandler.js'
 import userRouter from './routers/userRouter.js';
 import bookRouter from './routers/bookRouter.js';
 import authRouter from './routers/authRouter.js';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser())
 
 app.use('/auth', authRouter);
 app.use('/users', userRouter);
