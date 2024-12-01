@@ -5,12 +5,7 @@ import { useState, useEffect } from 'react';
 
 const Layout = () => {
 
-  const [theme, setTheme] = useState('darkTheme');
   const [isVisible, setIsVisible] = useState(false);
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'darkTheme' ? 'lightTheme' : 'darkTheme'));
-  };
 
   const toggleVisibility = () => {
     if (window.scrollY > 100) { // Adjust the scroll threshold as needed
