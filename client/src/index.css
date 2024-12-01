@@ -31,3 +31,9 @@ h1, h2, h3, h4, h5, h6 {
 body {
   font-family: 'Inter', sans-serif;
 }
+
+.btn-small {
+  padding: 0.25rem 0.5rem; /* Adjust padding */
+  font-size: 0.75rem; /* Smaller font size */
+  height: auto; /* Optional: Let the button adjust height */
+}

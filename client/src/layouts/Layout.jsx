@@ -49,9 +49,10 @@ const Layout = () => {
           style={{
             position: 'fixed',
             zIndex: 1000,
-            borderRadius: '5%',
-            padding: '0.2rem',
-            backgroundColor: '#fff',
+            borderRadius: '0.375rem',
+            padding: '0.4rem',
+            backgroundColor: '#f2dd80',
+            color: '#052f32',
           }}
         >
           ↑ scroll up
