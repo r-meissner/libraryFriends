@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 import { Link } from 'react-router-dom'
-import { LogOut, Users, BookUser, BookPlus, LibraryBig, BookCheck, User, Settings } from 'lucide-react';
+import { LogOut, Users, BookPlus, LibraryBig, BookCheck, User, Settings } from 'lucide-react';
 
 const Navbar = () => {
 
@@ -79,13 +79,13 @@ const Navbar = () => {
       <ul
         tabIndex={0}
         className="menu menu-sm dropdown-content bg-base-200 rounded-box z-[1] mt-3 w-44 p-2 shadow">
-        <li><Link to="/"> <BookCheck color="#f2dd80" size={18} /> My Books</Link></li>
-        <li><Link to="/"> <Users color="#f2dd80" size={18} /> My Friends</Link></li>
-        <li><Link to="/"> <User color="#f2dd80" size={18} /> My Profile</Link></li>
-        <li><Link to="/"> <LibraryBig color="#f2dd80" size={18} /> Shared Library</Link></li>
-        <li><Link to="/"> <BookPlus color="#f2dd80" size={18} /> Add a Book</Link></li>
-        <li><Link to="/"> <Settings color="#f2dd80" size={18} /> Settings</Link></li>
-        <li><Link to="/"> <LogOut color="#f2dd80" size={18} /> Logout</Link></li>
+        <li><Link to="/"> <BookCheck className="primary-content"  size={18} /> My Books</Link></li>
+        <li><Link to="/"> <Users className="primary-content" size={18} /> My Friends</Link></li>
+        <li><Link to="/"> <User className="primary-content" size={18} /> My Profile</Link></li>
+        <li><Link to="/"> <LibraryBig className="primary-content" size={18} /> Shared Library</Link></li>
+        <li><Link to="/"> <BookPlus className="primary-content" size={18} /> Add a Book</Link></li>
+        <li><Link to="/"> <Settings className="primary-content" size={18} /> Settings</Link></li>
+        <li><Link to="/"> <LogOut className="primary-content" size={18} /> Logout</Link></li>
       </ul>
     </div>
   </div>
