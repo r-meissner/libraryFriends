@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react'
 import { Link } from 'react-router-dom'
+import { LogOut, Users, BookUser, BookPlus, LibraryBig, BookCheck, User, Settings } from 'lucide-react';
 
 const Navbar = () => {
 
@@ -67,7 +68,7 @@ const Navbar = () => {
     {/* <div className="form-control">
       <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto" />
     </div> */}
-    {/* <div className="dropdown dropdown-end">
+     <div className="dropdown dropdown-end">
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
         <div className="w-10 rounded-full">
           <img
@@ -77,17 +78,16 @@ const Navbar = () => {
       </div>
       <ul
         tabIndex={0}
-        className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-        <li>
-          <a className="justify-between">
-            Profile
-            <span className="badge">New</span>
-          </a>
-        </li>
-        <li><a>Settings</a></li>
-        <li><a>Logout</a></li>
+        className="menu menu-sm dropdown-content bg-base-200 rounded-box z-[1] mt-3 w-44 p-2 shadow">
+        <li><Link to="/"> <BookCheck color="#f2dd80" size={18} /> My Books</Link></li>
+        <li><Link to="/"> <Users color="#f2dd80" size={18} /> My Friends</Link></li>
+        <li><Link to="/"> <User color="#f2dd80" size={18} /> My Profile</Link></li>
+        <li><Link to="/"> <LibraryBig color="#f2dd80" size={18} /> Shared Library</Link></li>
+        <li><Link to="/"> <BookPlus color="#f2dd80" size={18} /> Add a Book</Link></li>
+        <li><Link to="/"> <Settings color="#f2dd80" size={18} /> Settings</Link></li>
+        <li><Link to="/"> <LogOut color="#f2dd80" size={18} /> Logout</Link></li>
       </ul>
-    </div> */}
+    </div>
   </div>
 </div>
   )
