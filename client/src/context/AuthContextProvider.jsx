@@ -1,6 +1,7 @@
 import { AuthContext } from '.';
 import { useState, useEffect } from 'react';
-import { me, signin, signup, signout } from '../data';
+import { me, signin, signup, signout } from '../data/auth.js';
+
 const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);

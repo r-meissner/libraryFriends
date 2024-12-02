@@ -16,7 +16,7 @@ import PublicUserProfile from './pages/PublicUserProfile.jsx';
 import ProfileSettingsPage from './pages/ProfileSettingsPage.jsx';
 import BookDetailPage from './pages/BookDetailPage.jsx';
 import ProtectedRoute from './layouts/ProtectedRoute.jsx';
-import AuthProvider from './context/AuthContextProvider.jsx';
+
 
 
 

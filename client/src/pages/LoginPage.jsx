@@ -60,9 +60,9 @@ const LoginPage = () => {
             onChange={handleChange}
             type="password" id="password" className="col-span-4 input input-bordered border-primary-content bg-primary text-primary-content focus:bg-accent focus:text-accent-content" />
           </div>
-            <small>
+            <small className="text-primary-content">
               Don&apos;t have an account?{' '}
-              <Link to='/register' className='text-primary hover:underline'>
+              <Link to='/signup' className='text-primary-content hover:underline'>
                 Register!
               </Link>
             </small>
