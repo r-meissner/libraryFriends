@@ -1,5 +1,5 @@
 import axiosInstance from '../axiosIntercepter';
-const baseURL = '/auth';
+const baseURL = '/api/auth';
 export const me = async () => {
   try {
     const res = await axiosInstance(`${baseURL}/me`);
@@ -13,7 +13,7 @@ export const me = async () => {
 
 export const signin = async (formData) => {
   try {
-    const res = await axiosInstance.post(`${baseURL}/signin`, formData);
+    const res = await axiosInstance.post(`${baseURL}/login`, formData);
     return res.data;
   } catch (error) {
     if (error.response) {
@@ -38,7 +38,7 @@ export const signup = async (formData) => {
 };
 export const signout = async () => {
   try {
-    const res = await axiosInstance.delete(`${baseURL}/signout`);
+    const res = await axiosInstance.delete(`${baseURL}/logout`);
     return res.data;
   } catch (error) {
     if (error.response) {

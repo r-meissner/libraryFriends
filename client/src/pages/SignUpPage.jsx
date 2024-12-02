@@ -1,14 +1,15 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context'
+import { toast } from 'react-toastify'
 
 const SignUpPage = () => {
 
   const [form, setForm] = useState({
-    username: '',
+    userName: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    /* confirmPassword: '' */
   });
   const [ loading, setLoading ] = useState(false);
   const [ error, setError ] = useState('');
@@ -19,11 +20,11 @@ const SignUpPage = () => {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-      if (!form.username || !form.email || !form.password || !form.confirmPassword) throw new Error('All fields are required');
+      if (!form.userName || !form.email || !form.password /* || !form.confirmPassword */) throw new Error('All fields are required');
 
-      if (form.password !== form.confirmPassword) throw new Error('Passwords do not match');
+      /* if (form.password !== form.confirmPassword) throw new Error('Passwords do not match'); */
       setLoading(true);
-      const { confirmPassword, ...rest } = form;
+      const {/*  confirmPassword, */ ...rest } = form;
       const res = await signup(rest);
       if (res.error) {
         setError(res.error);
@@ -31,13 +32,13 @@ const SignUpPage = () => {
       setCheckSession((prev) => !prev);
       navigate('/');
     } catch (error) {
-      setError(error.message);
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
     };
 
-    const { username, email, password, confirmPassword } = form;
+    const { userName, email, password/* , confirmPassword */ } = form;
 
   return (
     <div className="min-h-screen flex items-center justify-center">
@@ -45,10 +46,10 @@ const SignUpPage = () => {
         <h1 className="text-primary-content text-center text-2xl font-bold p-4">Become a Library Friend!</h1>
         <form className="p-4 space-y-4" onSubmit={handleSubmit}>
           <div className="grid grid-cols-5 space-y-1 gap-4 items-center">
-            <label htmlFor="username" className="col-span-1 text-primary-content flex justify-end">Username</label>
+            <label htmlFor="userName" className="col-span-1 text-primary-content flex justify-end">Username</label>
             <input
-            name='username'
-            value={username}
+            name='userName'
+            value={userName}
             onChange={handleChange}
             type="username" id="username" className="col-span-4 input input-bordered border-primary-content bg-primary text-primary-content focus:bg-accent focus:text-accent-content" />
           </div>
@@ -69,12 +70,12 @@ const SignUpPage = () => {
             type="password" id="password" className="col-span-4 input input-bordered border-primary-content bg-primary text-primary-content focus:bg-accent focus:text-accent-content" />
           </div>
           <div className="grid grid-cols-5 space-y-1 gap-4 items-center">
-            <label htmlFor="password" className="col-span-1 text-primary-content flex justify-end">repeat Password</label>
+            {/* <label htmlFor="password" className="col-span-1 text-primary-content flex justify-end">repeat Password</label>
             <input
             name = 'confirmPassword'
             value={confirmPassword}
             onChange={handleChange}
-            type="password" id="password" className="col-span-4 input input-bordered border-primary-content bg-primary text-primary-content focus:bg-accent focus:text-accent-content" />
+            type="password" id="password" className="col-span-4 input input-bordered border-primary-content bg-primary text-primary-content focus:bg-accent focus:text-accent-content" /> */}
             <small className="text-primary-content">
               Already have an account?{' '}
               <Link to='/login' className='text-primary-content hover:underline'>
@@ -84,7 +85,7 @@ const SignUpPage = () => {
           </div>
           <div className="flex justify-end mt-4">
             <button disabled={loading} type="submit" className="btn btn-accent">Register</button>
-            {<p>{error}</p>}
+            {error && <p>{typeof error === 'object' ? error.message : error}</p>}
           </div>
         </form>
       </div>

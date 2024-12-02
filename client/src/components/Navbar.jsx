@@ -1,8 +1,21 @@
 import {useState, useEffect} from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { LogOut, Users, BookPlus, LibraryBig, BookCheck, User, Settings } from 'lucide-react';
+import { useAuth } from '../context';
+
+
 
 const Navbar = () => {
+
+  const { user, signout } = useAuth();
+  const handleLogout = async () => {
+    const res = await signout();
+    if (!res.error) {
+      window.location.reload();
+    }
+  };
+
+
 
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('theme') || 'darkTheme';
@@ -22,11 +35,23 @@ const Navbar = () => {
   <div  className="flex-auto">
     <Link to="/" ><img src="LibraryFriendsLogo.svg" alt="LibraryFriendsLogo" height="90vh" width="90vw" /></Link>
   </div>
+  {!user ? (
+   <>
   <div className="flex-auto gap-6">
-    <Link to="/">About us</Link>
-    <Link to="/">How it works</Link>
-    <Link to="/">Become a Member</Link>
+    <NavLink to="/">About us</NavLink>
+    <NavLink to="/">How it works</NavLink>
+    <NavLink to="/">Become a Member</NavLink>
   </div>
+  </>) : (
+    <>
+    <div className="flex-auto gap-6">
+      <NavLink to="/mybooks">My Books</NavLink>
+      <NavLink to="/friends">My Friends</NavLink>
+      <NavLink to="/sharedlibrary">Shared Library</NavLink>
+      <NavLink to="/addbook">Add a Book</NavLink>
+    </div>
+    </>
+  )}
   <div className="flex-none gap-4 pr-4">
     <div className="pr-4">
       <label className="flex cursor-pointer gap-2">
@@ -59,6 +84,8 @@ const Navbar = () => {
         </svg>
       </label>
     </div>
+    {!user ? (
+    <>
     <div>
       <Link to="/login" className="btn btn-primary min-h-10 h-10 px-5">Login</Link>
     </div>
@@ -67,7 +94,9 @@ const Navbar = () => {
     </div>
     {/* <div className="form-control">
       <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto" />
-    </div> */}
+    </div> */} </>)
+    : (
+    <>
      <div className="dropdown dropdown-end">
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
         <div className="w-10 rounded-full">
@@ -79,15 +108,15 @@ const Navbar = () => {
       <ul
         tabIndex={0}
         className="menu menu-sm dropdown-content bg-base-200 rounded-box z-[1] mt-3 w-44 p-2 shadow">
-        <li><Link to="/"> <BookCheck className="primary-content"  size={18} /> My Books</Link></li>
-        <li><Link to="/"> <Users className="primary-content" size={18} /> My Friends</Link></li>
-        <li><Link to="/"> <User className="primary-content" size={18} /> My Profile</Link></li>
-        <li><Link to="/"> <LibraryBig className="primary-content" size={18} /> Shared Library</Link></li>
-        <li><Link to="/"> <BookPlus className="primary-content" size={18} /> Add a Book</Link></li>
-        <li><Link to="/"> <Settings className="primary-content" size={18} /> Settings</Link></li>
-        <li><Link to="/"> <LogOut className="primary-content" size={18} /> Logout</Link></li>
+        <li><Link to="/mybooks"> <BookCheck className="primary-content"  size={18} /> My Books</Link></li>
+        <li><Link to="/friends"> <Users className="primary-content" size={18} /> My Friends</Link></li>
+        <li><Link to="/profile/:userid"> <User className="primary-content" size={18} /> My Profile</Link></li>
+        <li><Link to="/sharedlibrary"> <LibraryBig className="primary-content" size={18} /> Shared Library</Link></li>
+        <li><Link to="/addbook"> <BookPlus className="primary-content" size={18} /> Add a Book</Link></li>
+        <li><Link to="/settings/:userid"> <Settings className="primary-content" size={18} /> Settings</Link></li>
+        <li><Link onClick={handleLogout}> <LogOut className="primary-content" size={18} /> Logout</Link></li>
       </ul>
-    </div>
+    </div> </>)}
   </div>
 </div>
   )

@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import { useAuth } from "../context"
 import { useNavigate, useLocation } from "react-router-dom"
-
+import { toast } from "react-toastify"
 
 const LoginPage = () => {
 
@@ -33,7 +33,7 @@ const LoginPage = () => {
       console.log('location.state?.next', location.state?.next );
       navigate(location.state?.next || '/');
     } catch (error) {
-      setError(error.message);
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -68,7 +68,7 @@ const LoginPage = () => {
             </small>
           <div className="flex justify-end mt-4">
             <button type="submit" className="btn btn-accent"disabled={loading}>Login</button>
-            {<p>{error}</p>}
+            {error && <p>{typeof error === 'object' ? error.message : error}</p>}
           </div>
         </form>
       </div>

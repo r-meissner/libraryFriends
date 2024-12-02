@@ -16,7 +16,7 @@ import PublicUserProfile from './pages/PublicUserProfile.jsx';
 import ProfileSettingsPage from './pages/ProfileSettingsPage.jsx';
 import BookDetailPage from './pages/BookDetailPage.jsx';
 import ProtectedRoute from './layouts/ProtectedRoute.jsx';
-
+import AddABookPage from './pages/AddABookPage.jsx';
 
 
 
@@ -100,6 +100,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <BookDetailPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/addbook',
+        element: (
+          <ProtectedRoute>
+            <AddABookPage />
           </ProtectedRoute>
         ),
       }
