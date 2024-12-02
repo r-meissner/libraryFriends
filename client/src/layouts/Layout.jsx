@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useState, useEffect } from 'react';
+import { AuthContextProvider } from '../context';
 
 const Layout = () => {
 
@@ -29,7 +30,7 @@ const Layout = () => {
 
 
   return (
-    <div>
+    <AuthContextProvider>
       <Navbar />
         <main className="min-h-screen">
           <Outlet />
@@ -53,7 +54,7 @@ const Layout = () => {
           ↑ scroll up
         </button>
       )}
-    </div>
+    </AuthContextProvider>
   )
 }
 

@@ -1,9 +1,16 @@
-import { Navigate } from "react-router-dom"
-import { useAuth } from "../context/AuthContextProvider.jsx";
+import { useAuth } from '@/context';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
-const ProtectedRoute = ({children }) => {
-  const { isAuthenticated } = useAuth();
-  return isAuthenticated ? children : <Navigate to="/login" />;
+const ProtectedRoute = () => {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+  return (
+    <>
+      {!loading && (
+        <>{user ? <Outlet /> : <Navigate to='/login' state={{ next: location.pathname }} />}</>
+      )}
+    </>
+  );
 };
 
 export default ProtectedRoute;
