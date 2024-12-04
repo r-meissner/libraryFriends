@@ -29,7 +29,7 @@ const router = createBrowserRouter(
         <Route path='signup' element={<SignUpPage />} />
         <Route element={<ProtectedRoute />} errorElement={<ErrorPage />}>
           <Route path='mybooks' element={<MyBooksPage />} />
-          <Route path='myfriends' element={<MyFriendsPage />} />
+          <Route path='friends' element={<MyFriendsPage />} />
           <Route path='sharedlibrary' element={<SharedLibraryPage />} />
           <Route path='myborrowedbooks' element={<MyBorrowedBooksPage />} />
           <Route path='mylentbooks' element={<MyLentBooksPage />} />
