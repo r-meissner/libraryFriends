@@ -1,11 +1,35 @@
 import { Router } from "express";
 import validateJOI from "../middlewares/validateJoi.js";
 import { userSchema } from "../joi/schemas.js";
-import { getUserById, searchUserByEmail } from "../controllers/user.js";
+import {
+    getUserById,
+    searchUserByEmail,
+    updateUser,
+    getBooksFromUser,
+    getFriendsFromUser,
+    addBookToUser,
+    addFriendToUser,
+    deleteUser,
+} from "../controllers/user.js";
 
 const userRouter = Router();
 
-userRouter.route('/search').get(searchUserByEmail)
-userRouter.route('/:id').get(getUserById).put(validateJOI(userSchema))
+// User search by email
+userRouter.route('/search').post(searchUserByEmail);
+
+// User routes
+userRouter.route('/:id')
+    .get(getUserById) // Get user by ID
+    .put(validateJOI(userSchema), updateUser) // Update user
+    .delete(deleteUser); // Delete user
+
+// User books and friends
+userRouter.route('/:id/books')
+    .get(getBooksFromUser) // Get books from a user
+    .post(addBookToUser); // Add book to user's list
+
+userRouter.route('/:id/friends')
+    .get(getFriendsFromUser) // Get friends from a user
+    .post(addFriendToUser); // Add friend to user's list
 
 export default userRouter;
