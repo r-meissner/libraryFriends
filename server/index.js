@@ -10,6 +10,7 @@ import cookieParser from 'cookie-parser';
 //needed for deployment:
 import path from 'path';
 import { fileURLToPath } from 'url';
+import friendRequestRouter from './routers/friendRequestRouter.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -25,6 +26,7 @@ app.use(cookieParser())
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 app.use('/api/books', bookRouter);
+app.use('/api/friendrequests', friendRequestRouter);
 
 if (process.env.NODE_ENV === 'production') {
     //*Set static folder up in production
