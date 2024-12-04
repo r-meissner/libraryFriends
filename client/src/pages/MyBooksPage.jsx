@@ -1,4 +1,6 @@
 const MyBooksPage = () => {
+
+  console.log('MyBooksPage');
   return (
     <>
     <div className="drawer lg:drawer-open">

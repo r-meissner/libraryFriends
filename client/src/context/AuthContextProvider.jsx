@@ -10,6 +10,7 @@ const AuthContextProvider = ({ children }) => {
   useEffect(() => {
     const fetchUser = async () => {
       const loggedinUser = await me();
+      console.log('loggedinUser', loggedinUser);
       loggedinUser && setUser(loggedinUser);
       setLoading(false);
     };

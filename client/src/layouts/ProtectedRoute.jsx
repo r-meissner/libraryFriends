@@ -4,7 +4,8 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 const ProtectedRoute = () => {
   const { user, loading } = useAuth();
   const location = useLocation();
-  
+  console.log('user', user);
+
   return (
     <>
       {!loading && (
