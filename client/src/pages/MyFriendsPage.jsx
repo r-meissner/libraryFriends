@@ -23,7 +23,7 @@ const MyFriendsPage = () => {
               </label>
             </div>
           </div>
-          {/* book grid*/}
+          {/* grid*/}
           <div className="m-4 mr-8 w-11/12">
             <div className="grid grid-cols-8 gap-4 ">
               {/* avatar */}
