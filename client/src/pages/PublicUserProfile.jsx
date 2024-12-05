@@ -4,7 +4,7 @@ const PublicUserProfile = () => {
   return (
     <div>
 
-      {/* book grid*/}
+      {/* grid*/}
       <div className="m-4 mr-8 w-11/12">
             <div className="grid grid-cols-8 grid-rows-2 gap-4 ">
               {/* avatar */}
@@ -76,13 +76,6 @@ const PublicUserProfile = () => {
                 <div>published 1999</div>
               </div>
             </div>
-
-
-
-
-
-
-
           </div>
       </div>
     </div>

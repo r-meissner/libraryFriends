@@ -110,7 +110,7 @@ const Navbar = () => {
         className="menu menu-sm dropdown-content bg-base-200 rounded-box z-[1] mt-3 w-44 p-2 shadow">
         <li><Link to="/mybooks"> <BookCheck className="primary-content"  size={18} /> My Books</Link></li>
         <li><Link to="/friends"> <Users className="primary-content" size={18} /> My Friends</Link></li>
-        <li><Link to="/profile/:userid"> <User className="primary-content" size={18} /> My Profile</Link></li>
+        <li><Link to="/settings/:userid"> <User className="primary-content" size={18} /> My Profile</Link></li>
         <li><Link to="/sharedlibrary"> <LibraryBig className="primary-content" size={18} /> Shared Library</Link></li>
         <li><Link to="/addbook"> <BookPlus className="primary-content" size={18} /> Add a Book</Link></li>
         <li><Link to="/settings/:userid"> <Settings className="primary-content" size={18} /> Settings</Link></li>
