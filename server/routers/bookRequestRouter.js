@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { getBookRequestsOfUser, createBookRequest, deleteBookRequest } from '../controllers/bookRequest.js';
+import { getBookRequestsOfUser, createBookRequest, deleteBookRequest, updateBookRequest } from '../controllers/bookRequest.js';
 
 const bookRequestRouter = Router();
 
 bookRequestRouter.route('/').get(getBookRequestsOfUser).post(createBookRequest);
-bookRequestRouter.route('/:id').delete(deleteBookRequest);
+bookRequestRouter.route('/:id').put(updateBookRequest).delete(deleteBookRequest);
 
 export default bookRequestRouter;

@@ -31,3 +31,12 @@ export const getBookRequestsOfUser = asyncHandler(async (req, res) => {
     if (!bookRequest) throw new ErrorResponse('Book request not found', 404);
     res.status(200).json({ message: 'Book request deleted' });
   });
+
+  export const updateBookRequest = asyncHandler(async (req, res) => {
+    const { status } = req.body;
+    const bookRequest = await BookRequest.findByIdAndUpdate(req.params.id, { status }, { new: true, runValidators: true });
+    if (!bookRequest) {
+        return next(new ErrorResponse("Book request not found", 404)); 
+    }
+    res.status(201).json(bookRequest);
+})
