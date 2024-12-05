@@ -11,6 +11,7 @@ import cookieParser from 'cookie-parser';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import friendRequestRouter from './routers/friendRequestRouter.js';
+import bookRequestRouter from './routers/bookRequestRouter.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -27,6 +28,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 app.use('/api/books', bookRouter);
 app.use('/api/friendrequests', friendRequestRouter);
+app.use('/api/bookrequests', bookRequestRouter);
 
 if (process.env.NODE_ENV === 'production') {
     //*Set static folder up in production
