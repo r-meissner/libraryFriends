@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import { Search } from "lucide-react";
 
-
-const MyFriendsPage = () => {
+const IncomingFriendRequestPage = () => {
   return (
     <>
       <div className="drawer lg:drawer-open">
@@ -34,19 +33,25 @@ const MyFriendsPage = () => {
               </div>
 
               {/* username */}
-              <div className="col-span-4 flex justify-center items-center">
+              <div className="col-span-3 flex justify-center items-center">
                 <Link to="/profile/:userid"><h1>
                   Username
                 </h1></Link>
               </div>
 
-              {/* button to user's books --> also leads to profile */}
-              <div className="col-span-2 flex justify-center items-center">
-                <Link to="/profile/:userid">
-                  <div className="badge badge-primary badge-lg">explore username&apos;s books</div>
-                </Link>
+              {/* accept friend request */}
+              <div className="col-span-2 flex items-center justify-center">
+                <button className="btn btn-success btn-sm">accept friend request</button>
               </div>
-            </div>
+
+              {/* accept friend request */}
+              <div className="col-span-2 flex items-center justify-center">
+                <button className="btn btn-warning btn-sm">decline friend request</button>
+              </div>
+
+
+              </div>
+
 
 
 
@@ -92,4 +97,4 @@ const MyFriendsPage = () => {
   );
 };
 
-export default MyFriendsPage
+export default IncomingFriendRequestPage

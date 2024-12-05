@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import { Search } from "lucide-react";
 
-
-const MyFriendsPage = () => {
+const OutgoingFriendRequestPage = () => {
   return (
     <>
       <div className="drawer lg:drawer-open">
@@ -42,9 +41,9 @@ const MyFriendsPage = () => {
 
               {/* button to user's books --> also leads to profile */}
               <div className="col-span-2 flex justify-center items-center">
-                <Link to="/profile/:userid">
-                  <div className="badge badge-primary badge-lg">explore username&apos;s books</div>
-                </Link>
+                  <div className="badge badge-primary badge-lg">waiting for username&apos;s answer</div>
+                  <p>OR (conditional rendering)</p>
+                  <div className="badge badge-primary badge-lg">friend request declined</div>
               </div>
             </div>
 
@@ -92,4 +91,4 @@ const MyFriendsPage = () => {
   );
 };
 
-export default MyFriendsPage
+export default OutgoingFriendRequestPage
