@@ -67,8 +67,8 @@ const AddABookPage = () => {
   
   //put the search params into the URL correctly (see Google Books API docs)
   const constructUrl = (title, author, isbn) => {
-    const baseUrl = import.meta.env.VITE_BOOKS_API_URL;
-    const urlEnd =`&printType=books&key=${import.meta.env.VITE_BOOKS_API_KEY}`;
+    const baseUrl = import.meta.env.VITE_APP_BOOKS_API_URL;
+    const urlEnd =`&printType=books&key=${import.meta.env.VITE_APP_BOOKS_API_KEY}`;
     if (title) {
       const newUrl = `${baseUrl}q=intitle:${prepareQuery(title)}${urlEnd}`;
       return newUrl;
