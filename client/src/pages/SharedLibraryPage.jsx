@@ -75,7 +75,8 @@ const SharedLibraryPage = () => {
 
 
 
-          </div></div>
+          </div>
+        </div>
   )
 }
 
