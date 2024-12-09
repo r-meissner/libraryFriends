@@ -13,12 +13,12 @@ export const bookSchema = Joi.object({
     title: Joi.string().required(),
     author: Joi.string().required(),
     isbn: Joi.string().required(),
-    pages: Joi.number(),
-    publisher: Joi.string(),
-    year: Joi.string(),
-    edition: Joi.string(),
-    description: Joi.string(),
-    cover: Joi.string()
+    pages: Joi.number().allow(null),
+    publisher: Joi.string().allow(''),
+    year: Joi.string().allow(''),
+    edition: Joi.string().allow(''),
+    description: Joi.string().allow(''),
+    cover: Joi.string().allow('')
 });
 
 export const loginSchema = Joi.object({
