@@ -6,7 +6,7 @@ import { useAuth } from "../context";
 
 const PublicUserProfile = () => {
   const { userid } = useParams();
-  const { user: activeUser } = useAuth();
+  const { user: activeUser, theme } = useAuth();
   const [userData, setUserData] = useState(null);
   const [friendRequestStatus, setFriendRequestStatus] = useState(null);
   const [isFriend, setIsFriend] = useState(false);
@@ -91,7 +91,7 @@ const PublicUserProfile = () => {
           <div className="col-span-1 row-span-2 avatar flex justify-center items-center">
             <div className="w-24 rounded-full">
               <img
-                src={userData.avatar || `https://robohash.org/${userid}.webp`}
+                src={userData.avatar || (theme === "darkTheme" ? "/libraryFriends-avatarFallback_darkTheme.svg" : "/libraryFriends-avatarFallback_lightTheme.svg")}
                 alt={`profile picture of user ${userData.userName}`}
               />
             </div>
@@ -123,17 +123,18 @@ const PublicUserProfile = () => {
             </p>
           </div>
         </div>
+        {!isFriend ? (
         <div className="m-4">
           <h1>NO PUBLIC BOOKS.</h1>
           <p>
-            Please send a Friend Request to the user to see their books in your
-            Shared Library.
+            Please send a Friend Request to the user to see their books.
           </p>
         </div>
-        <div>OR (conditional rendering)</div>
+        ) : (
 
-        {/* book grid*/}
+
         <div className="m-4 mr-8 w-11/12">
+          {/* book grid*/}
           <div className="grid grid-cols-8 grid-rows-2 gap-4 ">
             {/* book cover */}
             <div className="col-span-1 row-span-2">
@@ -166,7 +167,7 @@ const PublicUserProfile = () => {
               <div>published 1999</div>
             </div>
           </div>
-        </div>
+        </div> )}
       </div>
     </div>
   );
