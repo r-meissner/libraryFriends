@@ -14,7 +14,7 @@ export const getFriendRequestsOfUser = asyncHandler(async (req, res) => {
 });
 
 export const getFriendRequestStatus = asyncHandler(async (req, res) => {
-    const { targetUser, requestingUser } = req.body;
+    const { targetUser, requestingUser } = req.query;
     if (!targetUser || !requestingUser) throw new ErrorResponse('Missing data', 400);
     const friendRequest = await FriendRequest.findOne({targetUser, requestingUser});
     if (!friendRequest) throw new ErrorResponse('Friend request not found', 404);

@@ -3,7 +3,8 @@ import { createFriendRequest, deleteFriendRequest, getFriendRequestsOfUser, getF
 
 const friendRequestRouter = Router();
 
-friendRequestRouter.route('/').get(getFriendRequestsOfUser).get(getFriendRequestStatus).post(createFriendRequest);
+friendRequestRouter.route('/').get(getFriendRequestsOfUser).post(createFriendRequest);
 friendRequestRouter.route('/:id').put(updateFriendRequest).delete(deleteFriendRequest);
+friendRequestRouter.route('/status').get(getFriendRequestStatus);
 
 export default friendRequestRouter;
