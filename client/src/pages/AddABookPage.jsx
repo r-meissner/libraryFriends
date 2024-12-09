@@ -4,6 +4,7 @@ import { Search } from 'lucide-react'
 import { createBook } from '../data/books';
 import { addBookToUser } from '../data/users';
 import { useAuth } from '../context';
+import { useDebounce} from 'use-debounce'
 
 
 const AddABookPage = () => {
@@ -12,7 +13,7 @@ const AddABookPage = () => {
     author: "",
     isbn: "",
     publisher: "",
-    pages: null,
+    pages: "",
     edition: "",
     year: "",
     description: "",
@@ -21,6 +22,8 @@ const AddABookPage = () => {
   const [authorQuery, setAuthorQuery] = useState("");
   const [titleQuery, setTitleQuery] = useState("");
   const [isbnQuery, setIsbnQuery] = useState("");
+  const [debouncedAuthor] = useDebounce(authorQuery, 500);
+  const [debouncedTitle] = useDebounce(titleQuery, 500);
   const [authorResults, setAuthorResults] = useState("");
   const [titleResults, setTitleResults] = useState("");
   const [isbnResults, setIsbnResults] = useState("");
@@ -33,14 +36,14 @@ const AddABookPage = () => {
     let ignore = false;
     const getSearchResults = async () => {
       try {
-        const res = await fetch(constructUrl(titleQuery,authorQuery,isbnQuery));
+        const res = await fetch(constructUrl(debouncedTitle,debouncedAuthor,isbnQuery));
         const data = await res.json()
         //console.log(data.items)
         if (!ignore) {
           if (data.items && data.items.length > 0) {
-            if (authorQuery) {
+            if (debouncedAuthor) {
               setAuthorResults(data.items);
-            } else if (titleQuery) {
+            } else if (debouncedTitle) {
               setTitleResults(data.items);
             } else if (isbnQuery) {
               setIsbnResults(data.items);
@@ -56,19 +59,19 @@ const AddABookPage = () => {
       }
     }
 
-    if (authorQuery.length>=3||titleQuery.length>=3||isbnQuery.length>=10) {
+    if (debouncedAuthor.length>=3||debouncedTitle.length>=3||isbnQuery.length===10||isbnQuery.length===13) {
       getSearchResults();
     }
 
     return () => {
       ignore = true;
     }
-  }, [authorQuery, titleQuery, isbnQuery])
+  }, [debouncedAuthor, debouncedTitle, isbnQuery])
   
   //put the search params into the URL correctly (see Google Books API docs)
   const constructUrl = (title, author, isbn) => {
-    const baseUrl = import.meta.env.VITE_BOOKS_API_URL;
-    const urlEnd =`&printType=books&key=${import.meta.env.VITE_BOOKS_API_KEY}`;
+    const baseUrl = import.meta.env.VITE_APP_BOOKS_API_URL;
+    const urlEnd =`&printType=books&key=${import.meta.env.VITE_APP_BOOKS_API_KEY}`;
     if (title) {
       const newUrl = `${baseUrl}q=intitle:${prepareQuery(title)}${urlEnd}`;
       return newUrl;
@@ -135,7 +138,7 @@ const AddABookPage = () => {
       edition: result.volumeInfo.edition || "",
       year: result.volumeInfo.publishedDate || "",
       description: result.volumeInfo.description || "",
-      cover: result.volumeInfo.industryIdentifiers ? `https://covers.openlibrary.org/b/isbn/${result.volumeInfo.industryIdentifiers[0].identifier}-M.jpg` : "",
+      cover: result.volumeInfo.imageLinks.thumbnail || "",
     });
     formRef.current.scrollIntoView({ behavior: 'smooth' });
     setAuthorResults([]);
@@ -226,7 +229,7 @@ const AddABookPage = () => {
                       onClick={() => handleResultClick(result)}
                     >
                       <strong>{result.volumeInfo.title}</strong>
-                      <p className="text-sm">{result.volumeInfo.authors[0]}</p>
+                      <p className="text-sm">{result.volumeInfo.authors?result.volumeInfo.authors.join(", "):"Unknown Author"}</p>
                     </li>
                   ))}
                 </ul>
