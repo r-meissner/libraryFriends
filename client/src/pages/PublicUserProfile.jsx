@@ -3,10 +3,14 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../axiosIntercepter";
 import { useAuth } from "../context";
 
+
 const PublicUserProfile = () => {
   const { userid } = useParams();
   const { user: activeUser } = useAuth();
   const [userData, setUserData] = useState(null);
+  const [friendRequestStatus, setFriendRequestStatus] = useState(null);
+  const [isFriend, setIsFriend] = useState(false);
+
 
   const sendFriendRequest = async () => {
     console.log("Sending friend request to user", userid);
@@ -28,6 +32,39 @@ const PublicUserProfile = () => {
       console.error("Error sending friend request:", error);
     }
   };
+
+  useEffect(() => {
+    const fetchFriendRequestStatus = async () => {
+      try {
+        const response = await axiosInstance.get(`/api/friendrequests/status`, {
+          params: {
+          targetUser: userid,
+          requestingUser: activeUser._id,
+          },
+        });
+        setFriendRequestStatus(response.data);
+      } catch (error) {
+        console.error("Error loading friend request status:", error);
+        setFriendRequestStatus(null);
+      }
+    };
+    fetchFriendRequestStatus();
+  }, [userid, activeUser?._id]);
+
+  useEffect(() => {
+    const fetchFriendShipStatus = async () => {
+      try {
+        const response = await axiosInstance.get(`/api/users/${activeUser._id}/friends`);
+        const friends = response.data;
+        const isFriend = friends.some((friend) => friend._id === userid);
+        setIsFriend(isFriend);
+      } catch (error) {
+        console.error("Error loading friendship status:", error);
+      }};
+
+    fetchFriendShipStatus();
+  }, [userid, activeUser._id]);
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -65,12 +102,19 @@ const PublicUserProfile = () => {
             <h1>{userData.userName}</h1>
           </div>
 
-          {/* friend request button */}
-          <div className="col-span-2 row-span-2 flex justify-center items-center">
+          {/* friend request button / status indicator */}
+            <div className="col-span-2 row-span-2 flex justify-center items-center">
+            {friendRequestStatus === null ? (
             <div className="btn btn-primary" onClick={sendFriendRequest}>
               send a friend request
             </div>
-          </div>
+           ) : friendRequestStatus === "open" ? (
+            <div className="badge badge-primary badge-lg">Friend Request Sent</div>
+           ) : isFriend ? (
+            <div className="badge badge-success badge-lg">You are Friends!</div>) : null
+          }
+            </div>
+
 
           {/* user location */}
           <div className="col-span-4  row-span-1 flex justify-center items-center">
