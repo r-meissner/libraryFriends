@@ -91,7 +91,7 @@ const PublicUserProfile = () => {
           <div className="col-span-1 row-span-2 avatar flex justify-center items-center">
             <div className="w-24 rounded-full">
               <img
-                src={userData.avatar}
+                src={userData.avatar || `https://robohash.org/${userid}.webp`}
                 alt={`profile picture of user ${userData.userName}`}
               />
             </div>
@@ -119,7 +119,7 @@ const PublicUserProfile = () => {
           {/* user location */}
           <div className="col-span-4  row-span-1 flex justify-center items-center">
             <p>
-              located in {userData.city}, {userData.country}
+              located in {userData.city || 'a dream city'}, {userData.country || 'in a dream country'}
             </p>
           </div>
         </div>
