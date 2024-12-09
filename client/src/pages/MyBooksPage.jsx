@@ -1,9 +1,41 @@
 import { Link } from "react-router-dom";
 import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import axiosInstance from "../axiosIntercepter";
 
 const MyBooksPage = () => {
+  const [books, setBooks] = useState([]);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUserAndBooks = async () => {
+      try {
+        // Get logged-in user info
+        const userResponse = await axiosInstance.get("/api/auth/me");
+        const loggedInUser = userResponse.data;
+        setUser(loggedInUser);
+
+        // Fetch user's books
+        const booksResponse = await axiosInstance.get(
+          `/api/users/${loggedInUser._id}/books`
+        );
+        setBooks(booksResponse.data);
+        console.log("Books state in render:", books);
+        console.log("booksResponse.data", booksResponse.data);
+      } catch (error) {
+        console.error("Error fetching user or books:", error);
+      }
+    };
+
+    fetchUserAndBooks();
+  }, []);
+
   return (
     <>
+      <div>
+        <h1>{user ? `${user.name}'s Books` : "My Books"}</h1>
+      </div>
+
       <div className="drawer lg:drawer-open">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col items-start justify-start w-full h-full">
@@ -31,48 +63,72 @@ const MyBooksPage = () => {
               </label>
             </div>
           </div>
-          {/* book grid*/}
+
+          {/* Book grid */}
           <div className="m-4 mr-8 w-11/12">
-            <div className="grid grid-cols-8 grid-rows-2 gap-4 ">
-              {/* book cover */}
-              <div className="col-span-1 row-span-2">
-                  <img src="https://ia801504.us.archive.org/view_archive.php?archive=/22/items/olcovers562/olcovers562-L.zip&file=5621267-L.jpg" alt="book cover title" />
+            {/* Dynamic Book Entries */}
+            {books.length > 0 &&
+              books.map((book) => (
+                <div key={book._id._id} className="grid grid-cols-8 grid-rows-2 gap-4 mb-4">
+                  <div className="col-span-1 row-span-2">
+                    <img
+                      src={book._id.cover}
+                      alt={`Cover of ${book._id.title}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  {/* Book title */}
+                  <div className="col-span-4 row-span-1">
+                    <h1 className="font-bold">{book._id.title}</h1>
+                  </div>
+
+                  {/* Book location */}
+                  <div className="col-span-2 row-span-2 flex items-center justify-center flex-wrap">
+                    <div className="badge badge-primary badge-lg">at my home</div>
+                    <p>OR (conditional rendering)</p>
+                    <div className="badge badge-primary badge-lg">borrowed by username</div>
+                  </div>
+
+                  {/* Delete book button */}
+                  <div className="col-span-1 row-span-2 flex items-center justify-center">
+                    <button className="btn btn-warning btn-xs">Delete book</button>
+                  </div>
+
+                  {/* Publisher & year */}
+                  <div className="col-span-4 row-span-1 flex items-start justify-evenly flex-col">
+                    <div>by {book._id.author}</div>
+                    <div>published {book._id.year || "Unknown Year"}</div>
+                  </div>
                 </div>
+              ))}
 
-              {/* book title */}
-              <div className="col-span-4 row-span-1">
-                <h1>
-                  Book Title
-                </h1>
-
+            {/* Mock Data */}
+            <div className="grid grid-cols-8 grid-rows-2 gap-4">
+              <div className="col-span-1 row-span-2">
+                <img
+                  src="https://ia801504.us.archive.org/view_archive.php?archive=/22/items/olcovers562/olcovers562-L.zip&file=5621267-L.jpg"
+                  alt="book cover title"
+                />
               </div>
-
-              {/* location of book */}
+              <div className="col-span-4 row-span-1">
+                <h1>Book Title</h1>
+              </div>
               <div className="col-span-2 row-span-2 flex items-center justify-center flex-wrap">
                 <div className="badge badge-primary badge-lg">at my home</div>
                 <p>OR (conditional rendering)</p>
                 <div className="badge badge-primary badge-lg">borrowed by username</div>
               </div>
-
-              {/* delete book button */}
               <div className="col-span-1 row-span-2 flex items-center justify-center">
                 <button className="btn btn-warning btn-xs">Delete book</button>
               </div>
-
-              {/* publisher & year */}
               <div className="col-span-4 row-span-1 flex items-start justify-evenly flex-col">
                 <div>by Author</div>
                 <div>published 1999</div>
               </div>
             </div>
-
-
-
-
-
-
-
           </div>
+
           <label
             htmlFor="my-drawer-2"
             className="btn btn-primary drawer-button lg:hidden"
@@ -80,6 +136,7 @@ const MyBooksPage = () => {
             Open drawer
           </label>
         </div>
+
         <div className="drawer-side">
           <label
             htmlFor="my-drawer-2"
