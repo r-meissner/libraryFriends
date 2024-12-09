@@ -2,6 +2,9 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosInstance from "../axiosIntercepter";
 import { useAuth } from "../context";
+import { fetchFriendShipStatus } from "../data/users";
+import { sendFriendRequest } from "../data/friendRequests";
+
 
 
 const PublicUserProfile = () => {
@@ -12,26 +15,10 @@ const PublicUserProfile = () => {
   const [isFriend, setIsFriend] = useState(false);
 
 
-  const sendFriendRequest = async () => {
-    console.log("Sending friend request to user", userid);
-    console.log("Active user:", activeUser);
+
     const activeUserId = activeUser._id;
 
-    try {
-      if (!activeUser) {
-        throw new Error("User not logged in");
-      }
-      const response = await axiosInstance.post("/api/friendRequests", {
-        targetUser: userid,
-        requestingUser: activeUserId,
-        status: "open",
-      });
 
-      console.log("Friend request sent:", response.data);
-    } catch (error) {
-      console.error("Error sending friend request:", error);
-    }
-  };
 
   useEffect(() => {
     const fetchFriendRequestStatus = async () => {
@@ -52,18 +39,19 @@ const PublicUserProfile = () => {
   }, [userid, activeUser?._id]);
 
   useEffect(() => {
-    const fetchFriendShipStatus = async () => {
+    const friendShipStatus = async () => {
       try {
-        const response = await axiosInstance.get(`/api/users/${activeUser._id}/friends`);
+        const response = await fetchFriendShipStatus(activeUser);
         const friends = response.data;
         const isFriend = friends.some((friend) => friend._id === userid);
         setIsFriend(isFriend);
-      } catch (error) {
-        console.error("Error loading friendship status:", error);
-      }};
-
-    fetchFriendShipStatus();
-  }, [userid, activeUser._id]);
+  } catch (error) {
+    console.error("Error loading friendship status:", error);
+  }
+  };
+  friendShipStatus();
+  }
+  , [userid, activeUser]);
 
 
   useEffect(() => {
@@ -105,7 +93,7 @@ const PublicUserProfile = () => {
           {/* friend request button / status indicator */}
             <div className="col-span-2 row-span-2 flex justify-center items-center">
             {friendRequestStatus === null ? (
-            <div className="btn btn-primary" onClick={sendFriendRequest}>
+            <div className="btn btn-primary" onClick={() => sendFriendRequest(userid, activeUserId)}>
               send a friend request
             </div>
            ) : friendRequestStatus === "open" ? (
