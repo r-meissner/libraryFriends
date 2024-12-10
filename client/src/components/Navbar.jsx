@@ -33,9 +33,7 @@ const Navbar = () => {
   return (
 <div className="navbar bg-base-100 shadow-md sticky top-0 z-50">
   <div  className="flex-auto">
-    <Link to="/" >
-    <img
-    src={theme === 'darkTheme' ? "LibraryFriendsLogo.svg" : "libraryFriends_Logo_lightTheme.svg"} alt="LibraryFriendsLogo" height="90vh" width="90vw" /></Link>
+    <Link to="/" ><img src={theme === 'darkTheme' ? '../LibraryFriendsLogo.svg' : '../libraryFriends_Logo_lightTheme.svg'} alt="LibraryFriendsLogo" height="90vh" width="90vw" /></Link>
   </div>
   {!user ? (
    <>

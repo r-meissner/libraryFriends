@@ -33,7 +33,7 @@ const MyBooksPage = () => {
   return (
     <>
       <div>
-        <h1>{user ? `${user.name}'s Books` : "My Books"}</h1>
+        <h1>{user ? `${user.userName}'s Books` : "My Books"}</h1>
       </div>
 
       <div className="drawer lg:drawer-open">
