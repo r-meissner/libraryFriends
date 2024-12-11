@@ -2,32 +2,57 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosInstance from "../axiosIntercepter";
 import { useAuth } from "../context";
+import { fetchFriendShipStatus } from "../data/users";
+import { sendFriendRequest } from "../data/friendRequests";
+
+
 
 const PublicUserProfile = () => {
   const { userid } = useParams();
-  const { user: activeUser } = useAuth();
+  const { user: activeUser, theme } = useAuth();
   const [userData, setUserData] = useState(null);
+  const [friendRequestStatus, setFriendRequestStatus] = useState(null);
+  const [isFriend, setIsFriend] = useState(false);
 
-  const sendFriendRequest = async () => {
-    console.log("Sending friend request to user", userid);
-    console.log("Active user:", activeUser);
+
+
     const activeUserId = activeUser._id;
 
-    try {
-      if (!activeUser) {
-        throw new Error("User not logged in");
-      }
-      const response = await axiosInstance.post("/api/friendRequests", {
-        targetUser: userid,
-        requestingUser: activeUserId,
-        status: "open",
-      });
 
-      console.log("Friend request sent:", response.data);
-    } catch (error) {
-      console.error("Error sending friend request:", error);
-    }
+
+  useEffect(() => {
+    const fetchFriendRequestStatus = async () => {
+      try {
+        const response = await axiosInstance.get(`/api/friendrequests/status`, {
+          params: {
+          targetUser: userid,
+          requestingUser: activeUser._id,
+          },
+        });
+        setFriendRequestStatus(response.data);
+      } catch (error) {
+        console.error("Error loading friend request status:", error);
+        setFriendRequestStatus(null);
+      }
+    };
+    fetchFriendRequestStatus();
+  }, [userid, activeUser?._id]);
+
+  useEffect(() => {
+    const friendShipStatus = async () => {
+      try {
+        const response = await fetchFriendShipStatus(activeUser);
+        const friends = response.data;
+        const isFriend = friends.some((friend) => friend._id === userid);
+        setIsFriend(isFriend);
+  } catch (error) {
+    console.error("Error loading friendship status:", error);
+  }
   };
+  friendShipStatus();
+  }
+  , [userid, activeUser]);
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -54,7 +79,7 @@ const PublicUserProfile = () => {
           <div className="col-span-1 row-span-2 avatar flex justify-center items-center">
             <div className="w-24 rounded-full">
               <img
-                src={userData.avatar}
+                src={userData.avatar || (theme === "darkTheme" ? "/libraryFriends-avatarFallback_darkTheme.svg" : "/libraryFriends-avatarFallback_lightTheme.svg")}
                 alt={`profile picture of user ${userData.userName}`}
               />
             </div>
@@ -65,31 +90,39 @@ const PublicUserProfile = () => {
             <h1>{userData.userName}</h1>
           </div>
 
-          {/* friend request button */}
-          <div className="col-span-2 row-span-2 flex justify-center items-center">
-            <div className="btn btn-primary" onClick={sendFriendRequest}>
+          {/* friend request button / status indicator */}
+            <div className="col-span-2 row-span-2 flex justify-center items-center">
+            {friendRequestStatus === null ? (
+            <div className="btn btn-primary" onClick={() => sendFriendRequest(userid, activeUserId)}>
               send a friend request
             </div>
-          </div>
+           ) : friendRequestStatus === "open" ? (
+            <div className="badge badge-primary badge-lg">Friend Request Sent</div>
+           ) : isFriend ? (
+            <div className="badge badge-success badge-lg">You are Friends!</div>) : null
+          }
+            </div>
+
 
           {/* user location */}
           <div className="col-span-4  row-span-1 flex justify-center items-center">
             <p>
-              located in {userData.city}, {userData.country}
+              located in {userData.city || 'a dream city'}, {userData.country || 'in a dream country'}
             </p>
           </div>
         </div>
+        {!isFriend ? (
         <div className="m-4">
           <h1>NO PUBLIC BOOKS.</h1>
           <p>
-            Please send a Friend Request to the user to see their books in your
-            Shared Library.
+            Please send a Friend Request to the user to see their books.
           </p>
         </div>
-        <div>OR (conditional rendering)</div>
+        ) : (
 
-        {/* book grid*/}
+
         <div className="m-4 mr-8 w-11/12">
+          {/* book grid*/}
           <div className="grid grid-cols-8 grid-rows-2 gap-4 ">
             {/* book cover */}
             <div className="col-span-1 row-span-2">
@@ -122,7 +155,7 @@ const PublicUserProfile = () => {
               <div>published 1999</div>
             </div>
           </div>
-        </div>
+        </div> )}
       </div>
     </div>
   );

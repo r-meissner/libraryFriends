@@ -36,3 +36,11 @@ export const searchFriendByEmail = async (formData) => {
     }
   }
 };
+
+export const fetchFriendShipStatus = async (activeUser) => {
+  try {
+    const response = await axiosInstance.get(`/api/users/${activeUser._id}/friends`);
+    return response.data;
+  } catch (error) {
+    console.error("Error loading friendship status:", error);
+  }};
