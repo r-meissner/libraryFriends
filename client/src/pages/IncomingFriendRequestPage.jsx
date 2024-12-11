@@ -23,11 +23,14 @@ const IncomingFriendRequestPage = () => {
   }
     , [activeUserId]);
 
+    console.log(incomingFriendRequests);
 
 
-  const acceptFriendRequestHandler = async (friendRequestId, requestingUserId, targerUserId) => {
+
+  const acceptFriendRequestHandler = async (friendRequestId, requestingUserId, targetUserId) => {
     try {
-      await acceptFriendRequest(friendRequestId, requestingUserId, targerUserId);
+      console.log("accepting friend request with ID ", friendRequestId);
+      await acceptFriendRequest(friendRequestId, requestingUserId, targetUserId);
       setFriendRequestStatus("closed");
     } catch (error) {
       console.error("Error accepting friend request", error);

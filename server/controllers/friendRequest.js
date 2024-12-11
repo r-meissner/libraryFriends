@@ -46,7 +46,7 @@ export const deleteFriendRequest = asyncHandler(async (req, res) => {
     res.status(200).json({ message: 'Friend request deleted' });
   });
 
-export const updateFriendRequest = asyncHandler(async (req, res) => {
+export const updateFriendRequest = asyncHandler(async (req, res, next) => {
     const { status } = req.body;
     const friendRequest = await FriendRequest.findByIdAndUpdate(req.params.id, { status }, { new: true, runValidators: true });
     if (!friendRequest) {
