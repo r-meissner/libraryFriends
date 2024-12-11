@@ -13,3 +13,16 @@ export const createBook = async (formData) => {
     throw new Error(errorData.error);
   }
 };
+
+export const getBookById = async (bookId) => {
+  try {
+    const res = await axiosInstance.get(`${baseURL}/${bookId}`);
+    return res.data;
+  } catch (error) {
+    const errorData = error.response.data;
+    if (!errorData.error) {
+      throw new Error("An error occurred while creating the post");
+    }
+    throw new Error(errorData.error);
+  }
+}
