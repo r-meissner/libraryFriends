@@ -39,10 +39,6 @@ const MyBooksPage = () => {
 
   return (
     <>
-      <div>
-        <h1>{user ? `${user.name}'s Books` : "My Books"}</h1>
-      </div>
-
       <div className="drawer lg:drawer-open">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col items-start justify-start w-full h-full">
