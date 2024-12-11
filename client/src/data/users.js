@@ -44,3 +44,14 @@ export const fetchFriendShipStatus = async (activeUser) => {
   } catch (error) {
     console.error("Error loading friendship status:", error);
   }};
+
+
+
+  export const getUserById = async (userId) => {
+    try {
+      const res = await axiosInstance.get(`${baseURL}/${userId}`);
+      return res.data;
+    } catch (error) {
+      console.error("Error loading user data:", error);
+    }
+  };

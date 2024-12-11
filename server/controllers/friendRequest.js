@@ -3,7 +3,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 import ErrorResponse from "../utils/ErrorResponse.js";
 
 export const getIncomingFriendRequestsOfUser = asyncHandler(async (req, res) => {
-    const { userId } = req.body;
+    const { userId } = req.params;
     if (!userId) throw new ErrorResponse('UserId missing', 400);
     const receivedRequests = await FriendRequest.find({targetUser: userId, status: 'open'}).populate('requestingUser', 'userName email avatar');
     res.status(200).json({
@@ -12,7 +12,7 @@ export const getIncomingFriendRequestsOfUser = asyncHandler(async (req, res) => 
 });
 
 export const getOutgoingFriendRequestsOfUser = asyncHandler(async (req, res) => {
-    const { userId } = req.body;
+    const { userId } = req.params;
     if (!userId) throw new ErrorResponse('UserId missing', 400);
     const sentRequests = await FriendRequest.find({requestingUser: userId, status: 'open'}).populate('targetUser','userName email avatar');
     res.status(200).json({

@@ -4,9 +4,9 @@ import { createFriendRequest, deleteFriendRequest, getIncomingFriendRequestsOfUs
 const friendRequestRouter = Router();
 
 friendRequestRouter.route('/').post(createFriendRequest);
-friendRequestRouter.route('/incoming').get(getIncomingFriendRequestsOfUser);
-friendRequestRouter.route('/outgoing').get(getOutgoingFriendRequestsOfUser);
-friendRequestRouter.route('/:id').put(updateFriendRequest).delete(deleteFriendRequest);
+friendRequestRouter.route('/:userId/incoming').get(getIncomingFriendRequestsOfUser);
+friendRequestRouter.route('/:userId/outgoing').get(getOutgoingFriendRequestsOfUser);
+friendRequestRouter.route('/:friendRequestId').put(updateFriendRequest).delete(deleteFriendRequest);
 friendRequestRouter.route('/status').get(getFriendRequestStatus);
 
 export default friendRequestRouter;
