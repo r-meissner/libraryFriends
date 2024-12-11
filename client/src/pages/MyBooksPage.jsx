@@ -10,7 +10,7 @@ const MyBooksPage = () => {
   useEffect(() => {
     const fetchUserAndBooks = async () => {
       try {
-        // Get logged-in user info
+        // Fetch logged-in user info
         const userResponse = await axiosInstance.get("/api/auth/me");
         const loggedInUser = userResponse.data;
         setUser(loggedInUser);
@@ -19,9 +19,16 @@ const MyBooksPage = () => {
         const booksResponse = await axiosInstance.get(
           `/api/users/${loggedInUser._id}/books`
         );
-        setBooks(booksResponse.data);
-        console.log("Books state in render:", books);
-        console.log("booksResponse.data", booksResponse.data);
+
+        console.log("Books Response Data:", booksResponse.data);
+
+        // Filter books that are NOT borrowed (currentReader field is absent or empty)
+        const ownedBooks = booksResponse.data.filter(
+          (book) => !book.currentReader || Object.keys(book.currentReader).length === 0
+        );
+
+        setBooks(ownedBooks);
+        console.log("Filtered Owned Books:", ownedBooks);
       } catch (error) {
         console.error("Error fetching user or books:", error);
       }
@@ -32,10 +39,6 @@ const MyBooksPage = () => {
 
   return (
     <>
-      <div>
-        <h1>{user ? `${user.name}'s Books` : "My Books"}</h1>
-      </div>
-
       <div className="drawer lg:drawer-open">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col items-start justify-start w-full h-full">
@@ -72,9 +75,19 @@ const MyBooksPage = () => {
                 <div key={book._id._id} className="grid grid-cols-8 grid-rows-2 gap-4 mb-4">
                   <div className="col-span-1 row-span-2">
                     <img
-                      src={book._id.cover}
-                      alt={`Cover of ${book._id.title}`}
+                      src={book._id?.cover || "https://via.placeholder.com/500?text=No+Cover"}
+                      alt={`Cover of ${book._id?.title || "No Title"}`}
                       className="w-full h-full object-cover"
+                      onLoad={(e) => {
+                        // Check if the image is too small or malformed
+                        if (e.target.naturalWidth < 100 || e.target.naturalHeight < 100) {
+                          e.target.src = "https://via.placeholder.com/500?text=No+Cover";
+                        }
+                      }}
+                      onError={(e) => {
+                        // Fallback to placeholder if image fails to load
+                        e.target.src = "https://via.placeholder.com/500?text=No+Cover";
+                      }}
                     />
                   </div>
 

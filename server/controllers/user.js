@@ -28,9 +28,16 @@ export const getBooksFromUser = asyncHandler(async (req, res) => {
     })
         .populate({
             path: 'books.owner',
+            select: 'userName', // includes the owners userName
         })
         .populate({
             path: 'books.currentReader',
+        })
+        .populate({
+            path: 'books.borrowedDate',
+        })
+        .populate({
+            path: 'books.returnDate',
         })
 
     if (!user) throw new ErrorResponse("User not found", 404);
