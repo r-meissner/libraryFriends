@@ -1,7 +1,29 @@
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { getBookById } from '../data/books';
 
 
 const BookDetailPage = () => {
+  const [book, setBook] = useState({});
+  const {bookid} = useParams();
+
+  useEffect(() => {
+    let ignore = false;
+    const getBook = async () => {
+      const bookData = await getBookById(bookid);
+      console.log(bookData);
+      if (!ignore) {
+        setBook(bookData);
+      }
+    }
+    getBook();
+  
+    return () => {
+      ignore = true;
+    }
+  }, [])
+  
+
   return (
     <div className="flex h-screen flex-row-reverse">
       {/* Sidebar */}
@@ -18,52 +40,54 @@ const BookDetailPage = () => {
 
       {/* Main content */}
       <div className="flex-1 bg-base-100 p-6">
-          <div className="grid grid-cols-4 grid-rows-8 gap-2">
+          <div className="grid grid-cols-4 gap-2 m-4">
             <div className="col-span-1 row-span-8">
               <img
-              src="https://ia801504.us.archive.org/view_archive.php?archive=/22/items/olcovers562/olcovers562-L.zip&file=5621267-L.jpg" alt="book cover title"
+              src={book.cover} alt={book.title}
               className="h-64 w-auto object-cover" />
             </div>
             <div className="col-start-2 col-span-3 row-span-2">
-              <h1>
-                Book Title
+              <h1 className="text-3xl font-bold">
+                {book.title}
               </h1>
             </div>
             <div className="col-start-2 col-span-3">
-              <p>
-                by Author
+              <p className="text-xl">
+                {book.author ? `by ${book.author}` : 'by Unknown Author'}
               </p>
             </div>
             <div className="col-start-2 col-span-3">
               <p>
-                published in 1999
+                {book.year ? book.year.substring(0, 4) : ""}
               </p>
             </div>
             <div className="col-start-2 col-span-3">
               <p>
-                published by Publishing House
+                {book.publisher ? `published by ${book.publisher}`: ""}
               </p>
             </div>
             <div className="col-start-2 col-span-3">
               <p>
-                edition number
+                {book.edition ? `${book.edition}` : ""}
               </p>
             </div>
             <div className="col-start-2 col-span-3">
               <p>
-                XXX pages
+                {book.pages? `${book.pages} pages` : ""}
               </p>
             </div>
             <div className="col-start-2 col-span-3">
               <p>
-                ISBN: 1234567890
+                {`ISBN: ${book.isbn}`}
               </p>
             </div>
 
           </div>
-          <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          <p className="leading-loose ml-3 mr-8 my-8 p-2 text-ellipsis overflow-hidden h-96 overflow-y-auto">
+          {book.description? `${book.description}` : 'This book defies description. What a mystery!'}
           </p>
+          
+          
 
       </div>
 
