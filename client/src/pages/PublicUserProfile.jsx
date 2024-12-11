@@ -4,6 +4,7 @@ import axiosInstance from "../axiosIntercepter";
 import { useAuth } from "../context";
 import { fetchFriendShipStatus } from "../data/users";
 import { sendFriendRequest } from "../data/friendRequests";
+import { getBooksFromUser } from "../data/users";
 
 
 
@@ -12,7 +13,9 @@ const PublicUserProfile = () => {
   const { user: activeUser, theme } = useAuth();
   const [userData, setUserData] = useState(null);
   const [friendRequestStatus, setFriendRequestStatus] = useState(null);
+  const [friendRequestStatus2, setFriendRequestStatus2] = useState(null);
   const [isFriend, setIsFriend] = useState(false);
+  const [books, setBooks] = useState([]);
 
 
 
@@ -39,19 +42,43 @@ const PublicUserProfile = () => {
   }, [userid, activeUser?._id]);
 
   useEffect(() => {
+    const fetchFriendRequestStatus2 = async () => {
+      try {
+        const response = await axiosInstance.get(`/api/friendrequests/status`, {
+          params: {
+          targetUser: activeUser._id,
+          requestingUser: userid,
+          },
+        });
+        setFriendRequestStatus2(response.data);
+      } catch (error) {
+        console.error("Error loading friend request status:", error);
+        setFriendRequestStatus2(null);
+      }
+    };
+    fetchFriendRequestStatus2();
+  }, [userid, activeUser?._id]);
+
+  useEffect(() => {
     const friendShipStatus = async () => {
       try {
-        const response = await fetchFriendShipStatus(activeUser);
-        const friends = response.data;
-        const isFriend = friends.some((friend) => friend._id === userid);
+        console.log("activeUserId", activeUserId);
+        const response = await fetchFriendShipStatus(activeUserId);
+        console.log("response", response);
+
+        const friends = response;
+        const isFriend = friends.some((friend) => {
+          const friendId = friend._id._id;
+          return friendId === userid });
         setIsFriend(isFriend);
+        console.log("isFriend", isFriend);
   } catch (error) {
     console.error("Error loading friendship status:", error);
   }
   };
-  friendShipStatus();
+  friendShipStatus(activeUserId);
   }
-  , [userid, activeUser]);
+  , [userid, activeUserId]);
 
 
   useEffect(() => {
@@ -59,6 +86,7 @@ const PublicUserProfile = () => {
       try {
         const response = await axiosInstance.get(`/api/users/${userid}`);
         setUserData(response.data);
+        console.log("userData", userData);
       } catch (error) {
         console.error("Error loading user data:", error);
       }
@@ -66,9 +94,28 @@ const PublicUserProfile = () => {
     fetchUserData();
   }, [userid]);
 
+
+  useEffect (() => {
+    const fetchBooks = async () => {
+      try {
+        const response = await getBooksFromUser(userid);
+        setBooks(response);
+        console.log("book response", response.data);
+      } catch (error) {
+        console.error("Error loading books:", error);
+      }
+    };
+    fetchBooks();
+  }
+  , [userid]);
+
+  console.log("books", books);
+  console.log("bookid", books[0]?._id);
+
+
   if (!userData) {
     return <p>Loading...</p>;
-  }
+  };
 
   return (
     <div>
@@ -92,13 +139,13 @@ const PublicUserProfile = () => {
 
           {/* friend request button / status indicator */}
             <div className="col-span-2 row-span-2 flex justify-center items-center">
-            {friendRequestStatus === null ? (
+            {friendRequestStatus === null && friendRequestStatus2 === null && !isFriend ? (
             <div className="btn btn-primary" onClick={() => sendFriendRequest(userid, activeUserId)}>
               send a friend request
             </div>
-           ) : friendRequestStatus === "open" ? (
+           ) : friendRequestStatus === "pending" || friendRequestStatus2 === "pending" ? (
             <div className="badge badge-primary badge-lg">Friend Request Sent</div>
-           ) : isFriend ? (
+           ) : isFriend? (
             <div className="badge badge-success badge-lg">You are Friends!</div>) : null
           }
             </div>
@@ -123,18 +170,22 @@ const PublicUserProfile = () => {
 
         <div className="m-4 mr-8 w-11/12">
           {/* book grid*/}
-          <div className="grid grid-cols-8 grid-rows-2 gap-4 ">
+          {books.length > 0 ? (
+          books.map((book) => (
+          <div key={book._id} className="grid grid-cols-8 grid-rows-2 gap-4 ">
+
+
             {/* book cover */}
             <div className="col-span-1 row-span-2">
               <img
-                src="https://ia801504.us.archive.org/view_archive.php?archive=/22/items/olcovers562/olcovers562-L.zip&file=5621267-L.jpg"
-                alt="book cover title"
+                src={book.cover || "/libraryFriends-favicon.svg"}
+                alt={book.title}
               />
             </div>
 
             {/* book title */}
             <div className="col-span-4 row-span-1">
-              <h1>Book Title</h1>
+              <h1>{book.title}</h1>
             </div>
 
             {/* book availability */}
@@ -151,10 +202,13 @@ const PublicUserProfile = () => {
 
             {/* publisher & year */}
             <div className="col-span-4 row-span-1 flex items-start justify-evenly flex-col">
-              <div>by Author</div>
-              <div>published 1999</div>
+              <div>by {book.author}</div>
+              <div>published {book.year}</div>
             </div>
           </div>
+          ))): (
+          <p>No books available</p>
+          )}
         </div> )}
       </div>
     </div>

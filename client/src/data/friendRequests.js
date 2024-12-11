@@ -21,18 +21,29 @@ export const sendFriendRequest = async (userid, activeUserId) => {
 
 export const acceptFriendRequest = async (friendRequestId, requestingUserId, targetUserId) => {
   try {
-    const res = await axiosInstance.put(`${baseURL}/${friendRequestId}`, { status: "closed" });
-    console.log("Friend request accepted:", res.data);
 
     // Add both users to each other's friends list
     await axiosInstance.post(`/api/users/${requestingUserId}/friends`, { friendId: targetUserId });
     await axiosInstance.post(`/api/users/${targetUserId}/friends`, { friendId: requestingUserId });
 
-    console.log("Friendship established");
+    // Delete the friend request
+    const res = await axiosInstance.delete(`${baseURL}/${friendRequestId}`);
+    console.log("Friend request accepted:", res.data);
 
   } catch (error) {
     if (error.response) {
       console.error("Error accepting friend request", error.response.data.error);
+    }
+  }
+};
+
+export const declineFriendRequest = async (friendRequestId) => {
+  try {
+    const res = await axiosInstance.put(`${baseURL}/${friendRequestId}`, { status: "declined" });
+    console.log("Friend request declined:", res.data);
+  } catch (error) {
+    if (error.response) {
+      console.error("Error deleting friend request", error.response.data.error);
     }
   }
 };

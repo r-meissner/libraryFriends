@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getIncomingFriendRequestsOfUser } from "../data/friendRequests";
-import { acceptFriendRequest } from "../data/friendRequests";
+import { acceptFriendRequest, declineFriendRequest } from "../data/friendRequests";
 import { useAuth } from "../context";
 
 
@@ -13,6 +13,7 @@ const IncomingFriendRequestPage = () => {
   const { user: activeUser } = useAuth();
   const activeUserId = activeUser._id;
   const [friendRequestStatus, setFriendRequestStatus] = useState("open");
+
 
   useEffect(() => {
     const fetchIncomingFriendRequests = async (activeUserId) => {
@@ -31,12 +32,21 @@ const IncomingFriendRequestPage = () => {
     try {
       console.log("accepting friend request with ID ", friendRequestId);
       await acceptFriendRequest(friendRequestId, requestingUserId, targetUserId);
-      setFriendRequestStatus("closed");
+      setFriendRequestStatus("accepted");
     } catch (error) {
       console.error("Error accepting friend request", error);
     }
   };
 
+  const declineFriendRequestHandler = async (friendRequestId) => {
+    try {
+      console.log("declining friend request with ID ", friendRequestId);
+      await declineFriendRequest(friendRequestId);
+      setFriendRequestStatus("closed");
+    } catch (error) {
+      console.error("Error declining friend request", error);
+    }
+  };
 
 
 
@@ -87,7 +97,7 @@ const IncomingFriendRequestPage = () => {
 
               {/* accept friend request */}
               <div className="col-span-2 flex items-center justify-center">
-                <button className="btn btn-warning btn-sm">decline friend request</button>
+                <button className="btn btn-warning btn-sm" onClick={() => declineFriendRequestHandler(incomingFriendRequest._id)}>decline friend request</button>
               </div>
             </div>
             ))) : ( <h1>No incoming friend requests</h1>)}

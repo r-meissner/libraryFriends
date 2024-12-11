@@ -1,7 +1,46 @@
 import { Link } from "react-router-dom";
 import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { getOutgoingFriendRequestsOfUser } from "../data/friendRequests";
+import { fetchFriendShipStatus } from "../data/users";
+import { useAuth } from "../context";
 
 const OutgoingFriendRequestPage = () => {
+
+  const [outgoingFriendRequests, setOutgoingFriendRequests] = useState([]);
+  const { user: activeUser } = useAuth();
+  const activeUserId = activeUser._id;
+  const [isFriend, setIsFriend] = useState(false);
+
+
+  useEffect(() => {
+    const fetchOutgoingFriendRequests = async (activeUserId) => {
+      const outgoingFriendRequests = await getOutgoingFriendRequestsOfUser(activeUserId);
+      setOutgoingFriendRequests(outgoingFriendRequests);
+    };
+    fetchOutgoingFriendRequests(activeUserId);
+  }
+    , [activeUserId]);
+
+    console.log(outgoingFriendRequests);
+
+    /* const userid = outgoingFriendRequests.targetUser._id; */
+
+   /*  useEffect(() => {
+      const friendShipStatus = async () => {
+        try {
+          const response = await fetchFriendShipStatus(activeUser);
+          const friends = response.data;
+          const isFriend = friends.some((friend) => friend._id === userid);
+          setIsFriend(isFriend);
+      } catch (error) {
+        console.error("Error loading friendship status:", error);
+      }
+      };
+      friendShipStatus();
+    }
+    , [userid, activeUser]); */
+
   return (
     <>
       <div className="drawer lg:drawer-open">
@@ -24,18 +63,20 @@ const OutgoingFriendRequestPage = () => {
           </div>
           {/* grid*/}
           <div className="m-4 mr-8 w-11/12">
-            <div className="grid grid-cols-8 gap-4 ">
+            {outgoingFriendRequests.length > 0 ? (
+              outgoingFriendRequests.map((outgoingFriendRequest) => (
+            <div key={outgoingFriendRequest._id} className="grid grid-cols-8 gap-4 ">
               {/* avatar */}
               <div className="col-span-1 avatar flex justify-center items-center">
                   <div className="w-24 rounded-full">
-                    <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                    <img src="libraryFriends-avatarFallback_darkTheme.svg" />
                 </div>
               </div>
 
               {/* username */}
               <div className="col-span-4 flex justify-center items-center">
-                <Link to="/profile/:userid"><h1>
-                  Username
+                <Link to={`/profile/${outgoingFriendRequest.targetUser._id}`}><h1>
+                {outgoingFriendRequest.targetUser.userName}
                 </h1></Link>
               </div>
 
@@ -47,6 +88,9 @@ const OutgoingFriendRequestPage = () => {
               </div>
             </div>
 
+            ))): (
+              <p>No outgoing friend requests</p>
+            )}
 
 
 
