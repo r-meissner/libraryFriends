@@ -172,20 +172,20 @@ const PublicUserProfile = () => {
           {/* book grid*/}
           {books.length > 0 ? (
           books.map((book) => (
-          <div key={book._id} className="grid grid-cols-8 grid-rows-2 gap-4 ">
+          <div key={book._id._id} className="grid grid-cols-8 grid-rows-2 gap-4 ">
 
 
             {/* book cover */}
             <div className="col-span-1 row-span-2">
               <img
-                src={book.cover || "/libraryFriends-favicon.svg"}
-                alt={book.title}
+                src={book._id.cover || "https://via.placeholder.com/500?text=No+Cover"}
+                alt={book._id.title}
               />
             </div>
 
             {/* book title */}
             <div className="col-span-4 row-span-1">
-              <h1>{book.title}</h1>
+              <h1>{book._id.title}</h1>
             </div>
 
             {/* book availability */}
@@ -202,8 +202,8 @@ const PublicUserProfile = () => {
 
             {/* publisher & year */}
             <div className="col-span-4 row-span-1 flex items-start justify-evenly flex-col">
-              <div>by {book.author}</div>
-              <div>published {book.year}</div>
+              <div>by {book._id.author}</div>
+              <div>published {book._id.year}</div>
             </div>
           </div>
           ))): (

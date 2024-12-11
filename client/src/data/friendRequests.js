@@ -9,7 +9,7 @@ export const sendFriendRequest = async (userid, activeUserId) => {
       {
         targetUser: userid,
         requestingUser: activeUserId,
-        status: "open",
+        status: "pending",
       });
     console.log("Friend request sent:", res.data);
   } catch (error) {
