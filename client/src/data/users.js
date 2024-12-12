@@ -66,3 +66,13 @@ export const fetchFriendShipStatus = async (activeUserId) => {
       console.error("Error loading user data:", error);
     }
   };
+
+
+  export const updateUser = async (userId, updatedUser) => {
+    try {
+      const res = await axiosInstance.put(`${baseURL}/${userId}`, updatedUser);
+      return res.data;
+    } catch (error) {
+      console.error("Error updating user data:", error);
+    }
+  };
