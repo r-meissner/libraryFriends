@@ -76,3 +76,13 @@ export const fetchFriendShipStatus = async (activeUserId) => {
       console.error("Error updating user data:", error);
     }
   };
+export const getSharedBooks = async (id) => {
+  try {
+    const res = await axiosInstance.get(`${baseURL}/${id}/sharedBooks`);
+    return res.data;
+  } catch (error) {
+    if (error.response) {
+      console.error("Error finding friend", error.response.data.error);
+    }
+  }
+}
