@@ -25,7 +25,7 @@ const HomePage = () => {
     </section>
 
     {/* Second "What We Do" Section */}
-    <section className=" bg-base-200 w-full flex flex-col-reverse lg:flex-row items-center justify-center py-16 gap-8 w-11/12">
+    <section className=" bg-base-200 w-full flex flex-col-reverse lg:flex-row items-center justify-center py-16 gap-8">
       <div className="max-w-xl text-center lg:text-left">
         <h2 className="text-3xl font-bold mb-4">Join the Community</h2>
         <p>
