@@ -33,7 +33,7 @@ const Navbar = () => {
   return (
 <div className="navbar bg-base-100 shadow-md sticky top-0 z-50">
   <div  className="flex-auto">
-    <Link to="/" ><img src="LibraryFriendsLogo.svg" alt="LibraryFriendsLogo" height="90vh" width="90vw" /></Link>
+    <Link to="/" ><img src={theme === 'darkTheme' ? '../LibraryFriendsLogo.svg' : '../libraryFriends_Logo_lightTheme.svg'} alt="LibraryFriendsLogo" height="90vh" width="90vw" /></Link>
   </div>
   {!user ? (
    <>
@@ -101,8 +101,8 @@ const Navbar = () => {
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
         <div className="w-10 rounded-full">
           <img
-            alt="Tailwind CSS Navbar component"
-            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+            alt={`picture of user ${user.userName}`}
+            src={user.avatar || (theme === 'darkTheme' ?'../libraryFriends-avatarFallback_darkTheme.svg' : '../libraryFriends-avatarFallback_lightTheme.svg')} />
         </div>
       </div>
       <ul

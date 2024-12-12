@@ -1,9 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Search } from "lucide-react";
+import { CirclePlus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context";
 import { getFriendsFromUser, searchFriendByEmail } from "../data/users";
 import { useDebounce} from 'use-debounce'
+import Loader from "../components/Loader";
 
 const MyFriendsPage = () => {
   const [friends, setFriends] = useState([]);
@@ -12,12 +13,14 @@ const MyFriendsPage = () => {
   const [results, setResults] = useState({});
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   //get the friends list on mount:
   useEffect(() => {
     let ignore = false;
     const getFriends = async () => {
       try {
+        setLoading(true);
         const data = await getFriendsFromUser(user._id);
         //console.log(data);
         if (!ignore) {
@@ -25,6 +28,8 @@ const MyFriendsPage = () => {
         }
       } catch (error) {
         console.log("Error fetching friends: ", error);
+      } finally {
+        setLoading(false);
       }
     };
     getFriends();
@@ -45,7 +50,7 @@ const MyFriendsPage = () => {
             setResults(result);
           } else {
             setResults([]);
-          } 
+          }
         }
       } catch (error) {
         console.log("Error fetching search results", error);
@@ -54,12 +59,12 @@ const MyFriendsPage = () => {
     if (search.length>=4) {
       searchFriend();
     }
-  
+
     return () => {
       ignore = true;
     }
   }, [debouncedSearch])
-  
+
 
   const handleChange = (e) => {
     setSearch(e.target.value);
@@ -74,17 +79,26 @@ const MyFriendsPage = () => {
       <div className="drawer lg:drawer-open">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col items-start justify-start w-full h-full">
+          <div className="m-4 mr-8 w-11/12">
+            {/*Loader*/}
+            {loading ? (
+              <div className="flex justify-center items-center h-40">
+                <Loader />
+              </div>
+            ) : (
+              // Content when not loading
+              <>
           <div className="m-4 flex items-center space-x-4 w-1/2">
             {/* search bar */}
             <div className="flex items-center gap-2 flex-grow">
               <label className="input input-bordered border-primary-content bg-primary flex items-center gap-2 text-primary-content focus:bg-accent focus:text-accent-content w-full">
-                <Search className="primary-content" size={18} />
+                <CirclePlus className="primary-content" size={18} />
                 <input
                   name="search"
                   id="search"
                   value={search}
                   onChange={handleChange}
-                  placeholder="Search for User"
+                  placeholder="Add your friends by typing their email"
                   className="grow placeholder-accent "
                 />
               </label>
@@ -105,7 +119,8 @@ const MyFriendsPage = () => {
             )}
           {/* grid*/}
           <div className="m-4 mr-8 w-11/12">
-            {friends.map((friend) => {
+            {friends.length > 0 ? (
+            friends.map((friend) => {
               return (
                 <div className="grid grid-cols-8 gap-4 " key={friend._id._id}>
                   {/* avatar */}
@@ -124,7 +139,7 @@ const MyFriendsPage = () => {
                   {/* username */}
                   <div className="col-span-4 flex justify-center items-center">
                     <Link to={`/profile/${friend._id._id}`}>
-                      <h1>{friend._id.userName}</h1>
+                      <h2>{friend._id.userName}</h2>
                     </Link>
                   </div>
 
@@ -137,9 +152,14 @@ const MyFriendsPage = () => {
                     </Link>
                   </div>
                 </div>
-              );
-            })}
+              )
+              })
+              ) : (
+                <p>You don't have any friends yet. Enter the mailadress of your friends above to add them. </p>
+                )}
           </div>
+          </>
+            )}
           <label
             htmlFor="my-drawer-2"
             className="btn btn-primary drawer-button lg:hidden"
@@ -147,6 +167,7 @@ const MyFriendsPage = () => {
             Open drawer
           </label>
         </div>
+      </div>
         <div className="drawer-side">
           <label
             htmlFor="my-drawer-2"
