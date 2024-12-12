@@ -1,5 +1,5 @@
 import axiosInstance from "../axiosIntercepter";
-const baseURL = "/api/friendRequests";
+const baseURL = "/api/friendrequests";
 
 
 
@@ -39,7 +39,9 @@ export const acceptFriendRequest = async (friendRequestId, requestingUserId, tar
 
 export const declineFriendRequest = async (friendRequestId) => {
   try {
-    const res = await axiosInstance.put(`${baseURL}/${friendRequestId}`, { status: "declined" });
+    const res = await axiosInstance.put(`${baseURL}/${friendRequestId}`, { status: 'declined' },
+      { headers: { 'Content-Type': 'application/json' } }
+    );
     console.log("Friend request declined:", res.data);
   } catch (error) {
     if (error.response) {

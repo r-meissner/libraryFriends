@@ -144,7 +144,7 @@ const PublicUserProfile = () => {
               send a friend request
             </div>
            ) : friendRequestStatus === "pending" || friendRequestStatus2 === "pending" ? (
-            <div className="badge badge-primary badge-lg">Friend Request Sent</div>
+            <div className="badge badge-primary badge-lg">Friend Request Pending</div>
            ) : isFriend? (
             <div className="badge badge-success badge-lg">You are Friends!</div>) : null
           }

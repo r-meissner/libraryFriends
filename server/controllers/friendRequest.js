@@ -39,7 +39,7 @@ export const createFriendRequest = asyncHandler(async (req, res) => {
     res.status(201).json(newFriendRequest);
 });
 
-export const deleteFriendRequest = asyncHandler(async (req, res) => {
+export const deleteFriendRequest = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     const friendRequest = await FriendRequest.findByIdAndDelete(id);
     if (!friendRequest) throw new ErrorResponse('Friend request not found', 404);
@@ -48,9 +48,17 @@ export const deleteFriendRequest = asyncHandler(async (req, res) => {
 
 export const updateFriendRequest = asyncHandler(async (req, res, next) => {
     const { status } = req.body;
-    const friendRequest = await FriendRequest.findByIdAndUpdate(req.params.id, { status }, { new: true, runValidators: true });
+
+    //validate status
+    if (!['pending', 'declined'].includes(status)) {
+        return next(new ErrorResponse("Invalid status value", 400));
+    }
+
+    const friendRequest = await FriendRequest.findByIdAndUpdate(
+        req.params.id, { status },
+        { new: true, runValidators: true });
     if (!friendRequest) {
         return next(new ErrorResponse("Friend request not found", 404));
     }
-    res.status(201).json(friendRequest);
+    res.status(200).json(friendRequest);
 })
