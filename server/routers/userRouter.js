@@ -10,6 +10,7 @@ import {
     addBookToUser,
     addFriendToUser,
     deleteUser,
+    sharedBooks,
 } from "../controllers/user.js";
 
 const userRouter = Router();
@@ -31,5 +32,7 @@ userRouter.route('/:id/books')
 userRouter.route('/:id/friends')
     .get(getFriendsFromUser) // Get friends from a user
     .post(addFriendToUser); // Add friend to user's list
+
+userRouter.route('/:id/sharedBooks').get(sharedBooks)
 
 export default userRouter;

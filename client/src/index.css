@@ -28,6 +28,10 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'Cambria', 'Times', serif;
 }
 
+h2 {
+  font-size: 1.8rem;
+}
+
 body {
   font-family: 'Inter', sans-serif;
 }
