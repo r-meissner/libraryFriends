@@ -19,6 +19,7 @@ import ProtectedRoute from './layouts/ProtectedRoute.jsx';
 import AddABookPage from './pages/AddABookPage.jsx';
 import IncomingFriendRequestPage from './pages/IncomingFriendRequestPage.jsx';
 import OutgoingFriendRequestPage from './pages/OutgoingFriendRequestPage.jsx';
+import BookRequestPage from './pages/BookRequestPage.jsx';
 
 
 const router = createBrowserRouter(
@@ -36,6 +37,7 @@ const router = createBrowserRouter(
           <Route path='sharedlibrary' element={<SharedLibraryPage />} />
           <Route path='myborrowedbooks' element={<MyBorrowedBooksPage />} />
           <Route path='mylentbooks' element={<MyLentBooksPage />} />
+          <Route path='bookrequests' element={<BookRequestPage />} />
           <Route path='profile/:userid' element={<PublicUserProfile />} />
           <Route path='settings/:userid' element={<ProfileSettingsPage />} />
           <Route path='addbook' element={<AddABookPage />} />

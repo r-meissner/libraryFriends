@@ -13,11 +13,11 @@ const MyLentBooksPage = () => {
         // Fetch logged-in user info
         const userResponse = await axiosInstance.get('/api/auth/me');
         const loggedInUser = userResponse.data;
-  
+
         // Fetch all books related to the user
         const booksResponse = await axiosInstance.get(`/api/users/${loggedInUser._id}/books`);
         console.log("Books Response Data:", booksResponse.data);
-  
+
         // Filter for lent books
         const filteredLentBooks = booksResponse.data.filter((book) => {
           // Ensure `currentReader` exists and is not the logged-in user
@@ -26,18 +26,18 @@ const MyLentBooksPage = () => {
             book.currentReader._id.toString() !== loggedInUser._id.toString()
           );
         });
-  
+
         setLentBooks(filteredLentBooks);
         console.log('Filtered Lent Books:', filteredLentBooks);
       } catch (error) {
         console.error('Error fetching lent books:', error);
       }
     };
-  
+
     fetchLentBooks();
   }, []);
-  
-  
+
+
   const filteredBooks = lentBooks.filter((book) =>
     book._id.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -146,6 +146,11 @@ const MyLentBooksPage = () => {
             <li>
               <Link to="/mylentbooks">
                 <h1>LENT BOOKS</h1>
+              </Link>
+            </li>
+            <li>
+              <Link to="/bookrequests">
+                <h1>BOOKREQUESTS</h1>
               </Link>
             </li>
           </ul>
