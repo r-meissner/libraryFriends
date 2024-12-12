@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../axiosIntercepter";
 import { useAuth } from "../context";
 import { fetchFriendShipStatus } from "../data/users";
-import { sendFriendRequest } from "../data/friendRequests";
+import { sendFriendRequest, fetchFriendRequestStatus } from "../data/friendRequests";
+import { getBooksFromUser } from "../data/users";
+
 
 
 
@@ -11,47 +13,41 @@ const PublicUserProfile = () => {
   const { userid } = useParams();
   const { user: activeUser, theme } = useAuth();
   const [userData, setUserData] = useState(null);
-  const [friendRequestStatus, setFriendRequestStatus] = useState(null);
-  const [isFriend, setIsFriend] = useState(false);
+  const [friendRequestStatus, setFriendRequestStatus] = useState({
+    sentStatus: null,
+    receivedStatus: null,
+  });
 
+  const [isFriend, setIsFriend] = useState(false);
+  const [books, setBooks] = useState([]);
 
 
     const activeUserId = activeUser._id;
 
 
-
   useEffect(() => {
-    const fetchFriendRequestStatus = async () => {
-      try {
-        const response = await axiosInstance.get(`/api/friendrequests/status`, {
-          params: {
-          targetUser: userid,
-          requestingUser: activeUser._id,
-          },
-        });
-        setFriendRequestStatus(response.data);
-      } catch (error) {
-        console.error("Error loading friend request status:", error);
-        setFriendRequestStatus(null);
-      }
-    };
-    fetchFriendRequestStatus();
-  }, [userid, activeUser?._id]);
+    if (userid && activeUserId) {
+      fetchFriendRequestStatus(userid, activeUserId, setFriendRequestStatus);}
+  }, [userid, activeUserId]);
+
+
 
   useEffect(() => {
     const friendShipStatus = async () => {
       try {
-        const response = await fetchFriendShipStatus(activeUser);
-        const friends = response.data;
-        const isFriend = friends.some((friend) => friend._id === userid);
+        const response = await fetchFriendShipStatus(activeUserId);
+        const friends = response;
+        const isFriend = friends.some((friend) => {
+          const friendId = friend._id._id;
+          return friendId === userid });
         setIsFriend(isFriend);
   } catch (error) {
     console.error("Error loading friendship status:", error);
   }
   };
-  friendShipStatus();
+  friendShipStatus(activeUserId);
   }
-  , [userid, activeUser]);
+  , [userid, activeUserId]);
 
 
   useEffect(() => {
@@ -66,9 +62,27 @@ const PublicUserProfile = () => {
     fetchUserData();
   }, [userid]);
 
+
+  useEffect (() => {
+    const fetchBooks = async () => {
+      try {
+        const response = await getBooksFromUser(userid);
+        setBooks(response);
+        console.log("book response", response);
+      } catch (error) {
+        console.error("Error loading books:", error);
+      }
+    };
+    fetchBooks();
+  }
+  , [userid]);
+
+
+
+
   if (!userData) {
     return <p>Loading...</p>;
-  }
+  };
 
   return (
     <div>
@@ -87,18 +101,23 @@ const PublicUserProfile = () => {
 
           {/* username */}
           <div className="col-span-4  row-span-1 flex justify-center items-center">
-            <h1>{userData.userName}</h1>
+            <h2>{userData.userName}</h2>
           </div>
 
           {/* friend request button / status indicator */}
             <div className="col-span-2 row-span-2 flex justify-center items-center">
-            {friendRequestStatus === null ? (
-            <div className="btn btn-primary" onClick={() => sendFriendRequest(userid, activeUserId)}>
+            {friendRequestStatus.sentStatus === null && friendRequestStatus.receivedStatus === null && !isFriend ? (
+            <div
+            className="btn btn-primary"
+            onClick={async () => {
+              await sendFriendRequest(userid, activeUserId);
+              fetchFriendRequestStatus(userid, activeUserId, setFriendRequestStatus);
+            }}>
               send a friend request
             </div>
-           ) : friendRequestStatus === "open" ? (
-            <div className="badge badge-primary badge-lg">Friend Request Sent</div>
-           ) : isFriend ? (
+           ) : friendRequestStatus.sentStatus === "pending" || friendRequestStatus.receivedStatus === "pending" ? (
+            <div className="badge badge-primary badge-lg">Friend Request Pending</div>
+           ) : isFriend? (
             <div className="badge badge-success badge-lg">You are Friends!</div>) : null
           }
             </div>
@@ -113,7 +132,7 @@ const PublicUserProfile = () => {
         </div>
         {!isFriend ? (
         <div className="m-4">
-          <h1>NO PUBLIC BOOKS.</h1>
+          <h2>NO PUBLIC BOOKS.</h2>
           <p>
             Please send a Friend Request to the user to see their books.
           </p>
@@ -123,18 +142,22 @@ const PublicUserProfile = () => {
 
         <div className="m-4 mr-8 w-11/12">
           {/* book grid*/}
-          <div className="grid grid-cols-8 grid-rows-2 gap-4 ">
+          {books.length > 0 ? (
+          books.map((book) => (
+          <div key={book._id._id} className="grid grid-cols-8 grid-rows-2 gap-4 ">
+
+
             {/* book cover */}
             <div className="col-span-1 row-span-2">
               <img
-                src="https://ia801504.us.archive.org/view_archive.php?archive=/22/items/olcovers562/olcovers562-L.zip&file=5621267-L.jpg"
-                alt="book cover title"
+                src={book._id.cover || "https://via.placeholder.com/500?text=No+Cover"}
+                alt={book._id.title}
               />
             </div>
 
             {/* book title */}
             <div className="col-span-4 row-span-1">
-              <h1>Book Title</h1>
+              <h2>{book._id.title}</h2>
             </div>
 
             {/* book availability */}
@@ -151,10 +174,13 @@ const PublicUserProfile = () => {
 
             {/* publisher & year */}
             <div className="col-span-4 row-span-1 flex items-start justify-evenly flex-col">
-              <div>by Author</div>
-              <div>published 1999</div>
+              <div>by {book._id.author}</div>
+              <div>published {book._id.year}</div>
             </div>
           </div>
+          ))): (
+          <p>No books available</p>
+          )}
         </div> )}
       </div>
     </div>

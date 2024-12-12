@@ -15,6 +15,17 @@ export const addBookToUser = async (formData, userId) => {
   }
 };
 
+export const getBooksFromUser = async (userId) => {
+  try {
+    const res = await axiosInstance.get(`${baseURL}/${userId}/books`);
+    return res.data;
+  } catch (error) {
+    if (error.response) {
+      console.error("Error fetching users' books", error.response.data.error);
+    }
+  }
+};
+
 export const getFriendsFromUser = async (userId) => {
   try {
     const res = await axiosInstance.get(`${baseURL}/${userId}/friends`);
@@ -37,10 +48,31 @@ export const searchFriendByEmail = async (formData) => {
   }
 };
 
-export const fetchFriendShipStatus = async (activeUser) => {
+export const fetchFriendShipStatus = async (activeUserId) => {
   try {
-    const response = await axiosInstance.get(`/api/users/${activeUser._id}/friends`);
+    const response = await axiosInstance.get(`/api/users/${activeUserId}/friends`);
     return response.data;
   } catch (error) {
     console.error("Error loading friendship status:", error);
   }};
+
+
+
+  export const getUserById = async (userId) => {
+    try {
+      const res = await axiosInstance.get(`${baseURL}/${userId}`);
+      return res.data;
+    } catch (error) {
+      console.error("Error loading user data:", error);
+    }
+  };
+
+
+  export const updateUser = async (userId, updatedUser) => {
+    try {
+      const res = await axiosInstance.put(`${baseURL}/${userId}`, updatedUser);
+      return res.data;
+    } catch (error) {
+      console.error("Error updating user data:", error);
+    }
+  };
