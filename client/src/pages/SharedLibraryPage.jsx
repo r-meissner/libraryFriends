@@ -95,7 +95,7 @@ const SharedLibraryPage = () => {
             {/* publisher & year */}
             <div className="col-span-2 row-span-1 flex items-start justify-evenly flex-col">
               <div>{`by ${book._id.author}`}</div>
-              <div>{book._id.year.substring(0,4)}</div>
+              <div>{book.id_year? book._id.year.substring(0,4):""}</div>
             </div>
           </div>);
         })}
