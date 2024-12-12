@@ -162,6 +162,11 @@ const MyBorrowedBooksPage = () => {
                 <h1>LENT BOOKS</h1>
               </Link>
             </li>
+            <li>
+              <Link to="/bookrequests">
+                <h1>BOOKREQUESTS</h1>
+              </Link>
+            </li>
           </ul>
         </div>
       </div>
