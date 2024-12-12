@@ -1,30 +1,34 @@
 import { Link } from "react-router-dom";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getIncomingFriendRequestsOfUser } from "../data/friendRequests";
-import {
+import { fetchBookRequestsOfUser } from "../data/bookRequests";
+/* import {
   acceptFriendRequest,
   declineFriendRequest,
-} from "../data/friendRequests";
+} from "../data/friendRequests"; */
 import { useAuth } from "../context";
 import Loader from "../components/Loader";
 
 const BookRequestPage = () => {
-  const [incomingFriendRequests, setIncomingFriendRequests] = useState([]);
+  /* const [incomingBookRequests, setIncomingBookRequests] = useState([]);
+  const [outgoingBookRequests, setOutgoingBookRequests] = useState([]); */
+  const [bookRequests, setBookRequests] = useState(
+    { sentRequests: [], receivedRequests: [] },
+  );
   const { user: activeUser } = useAuth();
   const activeUserId = activeUser._id;
-  const [friendRequestStatus, setFriendRequestStatus] = useState("pending");
+  /* const [bookRequestStatus, setBookRequestStatus] = useState("open"); */
   const [loading, setLoading] = useState(false);
 
-  const fetchIncomingFriendRequests = async (activeUserId) => {
+  const getBookRequestsOfUser = async (activeUserId) => {
     try {
       setLoading(true);
-      const incomingFriendRequests = await getIncomingFriendRequestsOfUser(
+      const res = await fetchBookRequestsOfUser(
         activeUserId
       );
-      setIncomingFriendRequests(incomingFriendRequests);
+      setBookRequests(res);
     } catch (error) {
-      console.error("Error fetching incoming friend requests", error);
+      console.error("Error fetching book requests", error);
     } finally {
       setLoading(false);
     }
@@ -32,13 +36,13 @@ const BookRequestPage = () => {
 
   useEffect(() => {
     if (activeUserId) {
-      fetchIncomingFriendRequests(activeUserId);
+      getBookRequestsOfUser(activeUserId);
     }
   }, [activeUserId]);
 
-  console.log(incomingFriendRequests);
+  console.log(bookRequests);
 
-  const acceptFriendRequestHandler = async (
+  /* const acceptFriendRequestHandler = async (
     friendRequestId,
     requestingUserId,
     targetUserId
@@ -55,9 +59,9 @@ const BookRequestPage = () => {
     } catch (error) {
       console.error("Error accepting friend request", error);
     }
-  };
+  }; */
 
-  const declineFriendRequestHandler = async (friendRequestId) => {
+ /*  const declineFriendRequestHandler = async (friendRequestId) => {
     try {
       console.log("declining friend request with ID ", friendRequestId);
       await declineFriendRequest(friendRequestId);
@@ -66,7 +70,7 @@ const BookRequestPage = () => {
     } catch (error) {
       console.error("Error declining friend request", error);
     }
-  };
+  }; */
 
   return (
     <>
@@ -99,10 +103,10 @@ const BookRequestPage = () => {
           </div> */}
                 {/* grid*/}
                 <div className="m-4 mr-8 w-11/12">
-                  {incomingFriendRequests.length > 0 ? (
-                    incomingFriendRequests.map((incomingFriendRequest) => (
+                  {bookRequests.receivedRequests.length > 0 ? (
+                    bookRequests.receivedRequests.map((bookRequest) => (
                       <div
-                        key={incomingFriendRequest._id}
+                        key={bookRequest._id}
                         className="grid grid-cols-8 gap-4 "
                       >
                         {/* avatar */}
@@ -115,10 +119,10 @@ const BookRequestPage = () => {
                         {/* username */}
                         <div className="col-span-3 flex justify-center items-center">
                           <Link
-                            to={`/profile/${incomingFriendRequest.requestingUser._id}`}
+                            to={`/profile/${bookRequest.requestingUser._id}`}
                           >
                             <h2>
-                              {incomingFriendRequest.requestingUser.userName}
+                              {bookRequest.requestingUser.userName}
                             </h2>
                           </Link>
                         </div>
@@ -127,15 +131,15 @@ const BookRequestPage = () => {
                         <div className="col-span-2 flex items-center justify-center">
                           <button
                             className="btn btn-success btn-sm"
-                            onClick={() =>
+                            /* onClick={() =>
                               acceptFriendRequestHandler(
                                 incomingFriendRequest._id,
                                 activeUserId,
                                 incomingFriendRequest.requestingUser._id
                               )
-                            }
+                            } */
                           >
-                            accept friend request
+                            accept book request
                           </button>
                         </div>
 
@@ -143,19 +147,19 @@ const BookRequestPage = () => {
                         <div className="col-span-2 flex items-center justify-center">
                           <button
                             className="btn btn-warning btn-sm"
-                            onClick={() =>
+                            /* onClick={() =>
                               declineFriendRequestHandler(
                                 incomingFriendRequest._id
                               )
-                            }
+                            } */
                           >
-                            decline friend request
+                            decline book request
                           </button>
                         </div>
                       </div>
                     ))
                   ) : (
-                    <p>No incoming friend requests</p>
+                    <p>No book requests</p>
                   )}
                 </div>
               </>
