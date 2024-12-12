@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../axiosIntercepter";
 import { useAuth } from "../context";
 import { fetchFriendShipStatus } from "../data/users";
-import { sendFriendRequest } from "../data/friendRequests";
+import { sendFriendRequest, fetchFriendRequestStatus } from "../data/friendRequests";
 import { getBooksFromUser } from "../data/users";
+
 
 
 
@@ -12,52 +13,24 @@ const PublicUserProfile = () => {
   const { userid } = useParams();
   const { user: activeUser, theme } = useAuth();
   const [userData, setUserData] = useState(null);
-  const [friendRequestStatus, setFriendRequestStatus] = useState(null);
-  const [friendRequestStatus2, setFriendRequestStatus2] = useState(null);
+  const [friendRequestStatus, setFriendRequestStatus] = useState({
+    sentStatus: null,
+    receivedStatus: null,
+  });
+
   const [isFriend, setIsFriend] = useState(false);
   const [books, setBooks] = useState([]);
-
 
 
     const activeUserId = activeUser._id;
 
 
-
   useEffect(() => {
-    const fetchFriendRequestStatus = async () => {
-      try {
-        const response = await axiosInstance.get(`/api/friendrequests/status`, {
-          params: {
-          targetUser: userid,
-          requestingUser: activeUser._id,
-          },
-        });
-        setFriendRequestStatus(response.data);
-      } catch (error) {
-        console.error("Error loading friend request status:", error);
-        setFriendRequestStatus(null);
-      }
-    };
-    fetchFriendRequestStatus();
-  }, [userid, activeUser?._id]);
+    if (userid && activeUserId) {
+      fetchFriendRequestStatus(userid, activeUserId, setFriendRequestStatus);}
+  }, [userid, activeUserId]);
 
-  useEffect(() => {
-    const fetchFriendRequestStatus2 = async () => {
-      try {
-        const response = await axiosInstance.get(`/api/friendrequests/status`, {
-          params: {
-          targetUser: activeUser._id,
-          requestingUser: userid,
-          },
-        });
-        setFriendRequestStatus2(response.data);
-      } catch (error) {
-        console.error("Error loading friend request status:", error);
-        setFriendRequestStatus2(null);
-      }
-    };
-    fetchFriendRequestStatus2();
-  }, [userid, activeUser?._id]);
+
 
   useEffect(() => {
     const friendShipStatus = async () => {
@@ -109,8 +82,7 @@ const PublicUserProfile = () => {
   }
   , [userid]);
 
-  console.log("books", books);
-  console.log("bookid", books[0]?._id);
+
 
 
   if (!userData) {
@@ -139,11 +111,16 @@ const PublicUserProfile = () => {
 
           {/* friend request button / status indicator */}
             <div className="col-span-2 row-span-2 flex justify-center items-center">
-            {friendRequestStatus === null && friendRequestStatus2 === null && !isFriend ? (
-            <div className="btn btn-primary" onClick={() => sendFriendRequest(userid, activeUserId)}>
+            {friendRequestStatus.sentStatus === null && friendRequestStatus.receivedStatus === null && !isFriend ? (
+            <div
+            className="btn btn-primary"
+            onClick={async () => {
+              await sendFriendRequest(userid, activeUserId);
+              fetchFriendRequestStatus(userid, activeUserId, setFriendRequestStatus);
+            }}>
               send a friend request
             </div>
-           ) : friendRequestStatus === "pending" || friendRequestStatus2 === "pending" ? (
+           ) : friendRequestStatus.sentStatus === "pending" || friendRequestStatus.receivedStatus === "pending" ? (
             <div className="badge badge-primary badge-lg">Friend Request Pending</div>
            ) : isFriend? (
             <div className="badge badge-success badge-lg">You are Friends!</div>) : null

@@ -1,7 +1,42 @@
 import axiosInstance from "../axiosIntercepter";
 const baseURL = "/api/friendrequests";
 
+export  const fetchFriendRequestStatus = async (userid, activeUserId, setFriendRequestStatus) => {
+  try {
+    const resSent = await axiosInstance.get(`/api/friendrequests/status`, {
+      params: {
+      targetUser: userid,
+      requestingUser: activeUserId,
+      },
+    });
+    const resReceived = await axiosInstance.get(`/api/friendrequests/status`, {
+      params: {
+      targetUser: activeUserId,
+      requestingUser: userid,
+      },
+    });
+      // Check if the response data is available, otherwise set to null
+      const sentStatus = resSent.data ? resSent.data : null;
+      const receivedStatus = resReceived.data ? resReceived.data : null;
 
+      // Set the state with the correct values
+      setFriendRequestStatus({
+        sentStatus: sentStatus,
+        receivedStatus: receivedStatus,
+      });
+
+      console.log("Sent Status:", sentStatus);
+      console.log("Received Status:", receivedStatus);
+
+  } catch (error) {
+    console.error("Error loading friend request status:", error);
+    setFriendRequestStatus({
+      sentStatus: null,
+      receivedStatus: null,
+    }
+    );
+  }
+};
 
 export const sendFriendRequest = async (userid, activeUserId) => {
   try {

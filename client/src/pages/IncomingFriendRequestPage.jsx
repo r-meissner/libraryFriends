@@ -12,17 +12,17 @@ const IncomingFriendRequestPage = () => {
   const [incomingFriendRequests, setIncomingFriendRequests] = useState([]);
   const { user: activeUser } = useAuth();
   const activeUserId = activeUser._id;
-  const [friendRequestStatus, setFriendRequestStatus] = useState("open");
+  const [friendRequestStatus, setFriendRequestStatus] = useState("pending");
 
+  const fetchIncomingFriendRequests = async (activeUserId) => {
+    const incomingFriendRequests = await getIncomingFriendRequestsOfUser(activeUserId);
+    setIncomingFriendRequests(incomingFriendRequests);
+  };
 
   useEffect(() => {
-    const fetchIncomingFriendRequests = async (activeUserId) => {
-      const incomingFriendRequests = await getIncomingFriendRequestsOfUser(activeUserId);
-      setIncomingFriendRequests(incomingFriendRequests);
-    };
+    if (activeUserId) {
     fetchIncomingFriendRequests(activeUserId);
-  }
-    , [activeUserId]);
+  }}, [activeUserId]);
 
     console.log(incomingFriendRequests);
 
@@ -32,6 +32,7 @@ const IncomingFriendRequestPage = () => {
     try {
       console.log("accepting friend request with ID ", friendRequestId);
       await acceptFriendRequest(friendRequestId, requestingUserId, targetUserId);
+      fetchIncomingFriendRequests(activeUserId);
       setFriendRequestStatus("accepted");
     } catch (error) {
       console.error("Error accepting friend request", error);
@@ -42,7 +43,8 @@ const IncomingFriendRequestPage = () => {
     try {
       console.log("declining friend request with ID ", friendRequestId);
       await declineFriendRequest(friendRequestId);
-      setFriendRequestStatus("closed");
+      fetchIncomingFriendRequests(activeUserId);
+      setFriendRequestStatus("declined");
     } catch (error) {
       console.error("Error declining friend request", error);
     }
