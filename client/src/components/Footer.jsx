@@ -33,7 +33,7 @@ const Footer = () => {
     <nav className="flex flex-col justify-center space-y-2">
       <Link to="/" className="link link-hover">About us</Link>
       <Link to="/" className="link link-hover">Contact</Link>
-      <a target="_blank" rel="noopener noreferrer" href="https://openlibrary.org/" className="link link-hover">OpenLibrary API</a>
+      
 
     </nav>
     <nav className="flex flex-col justify-center space-y-2">
