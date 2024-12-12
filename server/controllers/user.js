@@ -114,3 +114,35 @@ export const deleteUser = asyncHandler(async (req, res, next) => {
     res.status(200).json({ message: "User deleted successfully" });
 });
 
+//GET all the shared books: user's books + friend's books
+export const sharedBooks = asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    const user = await User.findById(id).populate({
+        path: 'books',
+        populate: {
+            path: '_id',
+            model: 'Book'
+          }
+      }).populate({
+        path: 'friends._id',
+        populate: {
+          path: 'books',
+          populate: {
+            path: '_id',
+            model: 'Book'
+          }
+        },
+      });
+  
+    if (!user) {
+      return next(new ErrorResponse("User not found", 404));
+    }
+  
+    // Combine the user's books and friends' books
+    const userBooks = user.books;
+    const friendsBooks = user.friends.flatMap(friend => friend._id.books);
+  
+    const sharedBooks = [...userBooks, ...friendsBooks];
+  
+    res.status(200).json(sharedBooks);
+  });
