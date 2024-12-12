@@ -39,7 +39,6 @@ const ProfileSettingsPage = () => {
 
   const saveChanges = async () => {
     const updatedUser = {
-      ...user,
       userName: username,
       email: email,
       city: city,
