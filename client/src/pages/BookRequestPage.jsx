@@ -12,9 +12,10 @@ import Loader from "../components/Loader";
 const BookRequestPage = () => {
   /* const [incomingBookRequests, setIncomingBookRequests] = useState([]);
   const [outgoingBookRequests, setOutgoingBookRequests] = useState([]); */
-  const [bookRequests, setBookRequests] = useState(
-    { sentRequests: [], receivedRequests: [] },
-  );
+  const [bookRequests, setBookRequests] = useState({
+    sentRequests: [],
+    receivedRequests: [],
+  });
   const { user: activeUser } = useAuth();
   const activeUserId = activeUser._id;
   /* const [bookRequestStatus, setBookRequestStatus] = useState("open"); */
@@ -23,9 +24,8 @@ const BookRequestPage = () => {
   const getBookRequestsOfUser = async (activeUserId) => {
     try {
       setLoading(true);
-      const res = await fetchBookRequestsOfUser(
-        activeUserId
-      );
+      const res = await fetchBookRequestsOfUser(activeUserId);
+      console.log("book requests", res);
       setBookRequests(res);
     } catch (error) {
       console.error("Error fetching book requests", error);
@@ -61,7 +61,7 @@ const BookRequestPage = () => {
     }
   }; */
 
- /*  const declineFriendRequestHandler = async (friendRequestId) => {
+  /*  const declineFriendRequestHandler = async (friendRequestId) => {
     try {
       console.log("declining friend request with ID ", friendRequestId);
       await declineFriendRequest(friendRequestId);
@@ -107,28 +107,43 @@ const BookRequestPage = () => {
                     bookRequests.receivedRequests.map((bookRequest) => (
                       <div
                         key={bookRequest._id}
-                        className="grid grid-cols-8 gap-4 "
+                        className="grid grid-cols-8 grid-rows-2 gap-4 "
                       >
-                        {/* avatar */}
-                        <div className="col-span-1 avatar flex justify-center items-center">
-                          <div className="w-24 rounded-full">
-                            <img src="libraryFriends-avatarFallback_darkTheme.svg" />
-                          </div>
+                        <div className="col-span-1 row-span-2 flex justify-center items-center">
+                          {/* book cover */}
+
+                          <img
+                            src={
+                              bookRequest._id?.cover ||
+                              "https://via.placeholder.com/500?text=No+Cover"
+                            }
+                            alt={`Cover of ${bookRequest._id?.title || "No Title"}`}
+                            className="w-full h-full object-cover"
+                            onLoad={(e) => {
+                              // Check if the image is too small or malformed
+                              if (
+                                e.target.naturalWidth < 100 ||
+                                e.target.naturalHeight < 100
+                              ) {
+                                e.target.src =
+                                  "https://via.placeholder.com/500?text=No+Cover";
+                              }
+                            }}
+                            onError={(e) => {
+                              // Fallback to placeholder if image fails to load
+                              e.target.src =
+                                "https://via.placeholder.com/500?text=No+Cover";
+                            }}
+                          />
                         </div>
 
-                        {/* username */}
-                        <div className="col-span-3 flex justify-center items-center">
-                          <Link
-                            to={`/profile/${bookRequest.requestingUser._id}`}
-                          >
-                            <h2>
-                              {bookRequest.requestingUser.userName}
-                            </h2>
-                          </Link>
+                        {/* Book Title */}
+                        <div className="col-span-3 row-span-1 flex justify-center items-center">
+                        <h1 className="font-bold">{bookRequest.book.title}</h1>
                         </div>
 
-                        {/* accept friend request */}
-                        <div className="col-span-2 flex items-center justify-center">
+                        {/* accept book request */}
+                        <div className="col-span-2 row-span-2 flex items-center justify-center">
                           <button
                             className="btn btn-success btn-sm"
                             /* onClick={() =>
@@ -139,12 +154,12 @@ const BookRequestPage = () => {
                               )
                             } */
                           >
-                            accept book request
+                            accept to lend this book
                           </button>
                         </div>
 
-                        {/* accept friend request */}
-                        <div className="col-span-2 flex items-center justify-center">
+                        {/* decline book request */}
+                        <div className="col-span-2 row-span-2 flex items-center justify-center">
                           <button
                             className="btn btn-warning btn-sm"
                             /* onClick={() =>
@@ -153,9 +168,14 @@ const BookRequestPage = () => {
                               )
                             } */
                           >
-                            decline book request
+                            decline to lend this book
                           </button>
                         </div>
+
+                        {/* requesting user */}
+                        <div className="col-span-3 col-start-2 row-start-2 row-span-1 flex items-center justify-center">
+                          <div className="badge badge-primary">requested by {bookRequest.requestingUser.userName}</div>
+                      </div>
                       </div>
                     ))
                   ) : (
@@ -174,15 +194,15 @@ const BookRequestPage = () => {
           </div>
         </div>
 
-          <div className="drawer-side">
-            <label
-              htmlFor="my-drawer-2"
-              aria-label="close sidebar"
-              className="drawer-overlay"
-            ></label>
-            <ul className="menu bg-base-200 text-base-content min-h-full w-60 pt-4 p-2">
-              {/* Sidebar content here */}
-              <li>
+        <div className="drawer-side">
+          <label
+            htmlFor="my-drawer-2"
+            aria-label="close sidebar"
+            className="drawer-overlay"
+          ></label>
+          <ul className="menu bg-base-200 text-base-content min-h-full w-60 pt-4 p-2">
+            {/* Sidebar content here */}
+            <li>
               <Link to="/mybooks">
                 <h1>MY BOOKS</h1>
               </Link>
@@ -202,10 +222,9 @@ const BookRequestPage = () => {
                 <h1>BOOKREQUESTS</h1>
               </Link>
             </li>
-            </ul>
-          </div>
+          </ul>
         </div>
-
+      </div>
     </>
   );
 };
