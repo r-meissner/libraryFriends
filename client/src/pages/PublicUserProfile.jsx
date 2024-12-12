@@ -5,6 +5,7 @@ import { useAuth } from "../context";
 import { fetchFriendShipStatus } from "../data/users";
 import { sendFriendRequest, fetchFriendRequestStatus } from "../data/friendRequests";
 import { getBooksFromUser } from "../data/users";
+import { Link } from "react-router-dom";
 
 
 
@@ -130,7 +131,20 @@ const PublicUserProfile = () => {
             </p>
           </div>
         </div>
-        {!isFriend ? (
+
+        {/* can be deleted later, when books will be displayed */}
+        <div className="m-4 mr-8 w-11/12 flex justify-center">
+          <h2>Check out {userData.userName}'s books in the
+            <Link to="/sharedlibrary">
+              <div className="btn btn-primary btn-sm text-2xl ml-4">Shared Library!</div>
+            </Link>
+          </h2>
+
+        </div>
+
+
+
+        {/* {!isFriend ? (
         <div className="m-4">
           <h2>NO PUBLIC BOOKS.</h2>
           <p>
@@ -141,13 +155,13 @@ const PublicUserProfile = () => {
 
 
         <div className="m-4 mr-8 w-11/12">
-          {/* book grid*/}
+          // book grid
           {books.length > 0 ? (
           books.map((book) => (
           <div key={book._id._id} className="grid grid-cols-8 grid-rows-2 gap-4 ">
 
 
-            {/* book cover */}
+            // book cover
             <div className="col-span-1 row-span-2">
               <img
                 src={book._id.cover || "https://via.placeholder.com/500?text=No+Cover"}
@@ -155,24 +169,24 @@ const PublicUserProfile = () => {
               />
             </div>
 
-            {/* book title */}
+            //book title
             <div className="col-span-4 row-span-1">
               <h2>{book._id.title}</h2>
             </div>
 
-            {/* book availability */}
+            //book availability
             <div className="col-span-2 row-span-1 flex items-center justify-center flex-wrap">
               <div className="badge badge-primary badge-lg">available</div>
               <p>OR (conditional rendering)</p>
               <div className="badge badge-primary badge-lg">not available</div>
             </div>
 
-            {/* request book button */}
+            //request book button
             <div className="col-span-1 row-span-2 flex items-center justify-center">
               <button className="btn btn-success btn-sm">Request book</button>
             </div>
 
-            {/* publisher & year */}
+            //publisher & year
             <div className="col-span-4 row-span-1 flex items-start justify-evenly flex-col">
               <div>by {book._id.author}</div>
               <div>published {book._id.year}</div>
@@ -181,7 +195,7 @@ const PublicUserProfile = () => {
           ))): (
           <p>No books available</p>
           )}
-        </div> )}
+        </div> )}*/}
       </div>
     </div>
   );
