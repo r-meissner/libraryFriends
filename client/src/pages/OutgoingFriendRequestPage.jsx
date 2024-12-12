@@ -75,15 +75,15 @@ const OutgoingFriendRequestPage = () => {
 
               {/* username */}
               <div className="col-span-4 flex justify-center items-center">
-                <Link to={`/profile/${outgoingFriendRequest.targetUser._id}`}><h1>
+                <Link to={`/profile/${outgoingFriendRequest.targetUser._id}`}><h2>
                 {outgoingFriendRequest.targetUser.userName}
-                </h1></Link>
+                </h2></Link>
               </div>
 
               {/* status indicator */}
               <div className="col-span-2 flex justify-center items-center">
                 {outgoingFriendRequest.status === "pending" ? (
-                  <div className="badge badge-primary badge-lg">waiting for username&apos;s answer</div>
+                  <div className="badge badge-primary badge-lg">waiting for {outgoingFriendRequest.targetUser.userName}'s answer</div>
                 ) : (
                   <div className="badge badge-primary badge-lg">friend request declined</div>
                 )}

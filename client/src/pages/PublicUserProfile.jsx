@@ -35,16 +35,12 @@ const PublicUserProfile = () => {
   useEffect(() => {
     const friendShipStatus = async () => {
       try {
-        console.log("activeUserId", activeUserId);
         const response = await fetchFriendShipStatus(activeUserId);
-        console.log("response", response);
-
         const friends = response;
         const isFriend = friends.some((friend) => {
           const friendId = friend._id._id;
           return friendId === userid });
         setIsFriend(isFriend);
-        console.log("isFriend", isFriend);
   } catch (error) {
     console.error("Error loading friendship status:", error);
   }
@@ -59,7 +55,6 @@ const PublicUserProfile = () => {
       try {
         const response = await axiosInstance.get(`/api/users/${userid}`);
         setUserData(response.data);
-        console.log("userData", userData);
       } catch (error) {
         console.error("Error loading user data:", error);
       }
@@ -73,7 +68,7 @@ const PublicUserProfile = () => {
       try {
         const response = await getBooksFromUser(userid);
         setBooks(response);
-        console.log("book response", response.data);
+        console.log("book response", response);
       } catch (error) {
         console.error("Error loading books:", error);
       }
@@ -106,7 +101,7 @@ const PublicUserProfile = () => {
 
           {/* username */}
           <div className="col-span-4  row-span-1 flex justify-center items-center">
-            <h1>{userData.userName}</h1>
+            <h2>{userData.userName}</h2>
           </div>
 
           {/* friend request button / status indicator */}
@@ -137,7 +132,7 @@ const PublicUserProfile = () => {
         </div>
         {!isFriend ? (
         <div className="m-4">
-          <h1>NO PUBLIC BOOKS.</h1>
+          <h2>NO PUBLIC BOOKS.</h2>
           <p>
             Please send a Friend Request to the user to see their books.
           </p>
@@ -162,7 +157,7 @@ const PublicUserProfile = () => {
 
             {/* book title */}
             <div className="col-span-4 row-span-1">
-              <h1>{book._id.title}</h1>
+              <h2>{book._id.title}</h2>
             </div>
 
             {/* book availability */}

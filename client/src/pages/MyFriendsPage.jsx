@@ -125,7 +125,7 @@ const MyFriendsPage = () => {
                   {/* username */}
                   <div className="col-span-4 flex justify-center items-center">
                     <Link to={`/profile/${friend._id._id}`}>
-                      <h1>{friend._id.userName}</h1>
+                      <h2>{friend._id.userName}</h2>
                     </Link>
                   </div>
 

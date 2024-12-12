@@ -87,9 +87,9 @@ const IncomingFriendRequestPage = () => {
 
               {/* username */}
               <div className="col-span-3 flex justify-center items-center">
-                <Link to={`/profile/${incomingFriendRequest.requestingUser._id}`}><h1>
+                <Link to={`/profile/${incomingFriendRequest.requestingUser._id}`}><h2>
                   {incomingFriendRequest.requestingUser.userName}
-                </h1></Link>
+                </h2></Link>
               </div>
 
               {/* accept friend request */}
