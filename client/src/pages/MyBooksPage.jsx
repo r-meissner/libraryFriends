@@ -116,7 +116,7 @@ const MyBooksPage = () => {
                 </div>
               ))}
 
-            {/* Mock Data */}
+            {/* Mock Data 
             <div className="grid grid-cols-8 grid-rows-2 gap-4">
               <div className="col-span-1 row-span-2">
                 <img
@@ -140,6 +140,7 @@ const MyBooksPage = () => {
                 <div>published 1999</div>
               </div>
             </div>
+            */}
           </div>
 
           <label
