@@ -56,9 +56,9 @@ const IncomingFriendRequestPage = () => {
       <div className="drawer lg:drawer-open">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col items-start justify-start w-full h-full">
-          <div className="m-4 flex items-center space-x-4 w-1/2">
+          {/* <div className="m-4 flex items-center space-x-4 w-1/2">
 
-            {/* search bar */}
+            search bar
             <div className="flex items-center gap-2 flex-grow">
               <label className="input input-bordered border-primary-content bg-primary flex items-center gap-2 text-primary-content focus:bg-accent focus:text-accent-content w-full">
                 <Search className="primary-content" size={18} />
@@ -70,7 +70,7 @@ const IncomingFriendRequestPage = () => {
                 />
               </label>
             </div>
-          </div>
+          </div> */}
           {/* grid*/}
           <div className="m-4 mr-8 w-11/12">
               {incomingFriendRequests.length > 0 ? (
@@ -100,7 +100,7 @@ const IncomingFriendRequestPage = () => {
                 <button className="btn btn-warning btn-sm" onClick={() => declineFriendRequestHandler(incomingFriendRequest._id)}>decline friend request</button>
               </div>
             </div>
-            ))) : ( <h1>No incoming friend requests</h1>)}
+            ))) : ( <p>No incoming friend requests</p>)}
 
 
           </div>

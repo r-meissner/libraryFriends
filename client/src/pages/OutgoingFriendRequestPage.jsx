@@ -46,9 +46,9 @@ const OutgoingFriendRequestPage = () => {
       <div className="drawer lg:drawer-open">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col items-start justify-start w-full h-full">
-          <div className="m-4 flex items-center space-x-4 w-1/2">
+          {/* <div className="m-4 flex items-center space-x-4 w-1/2">
 
-            {/* search bar */}
+            search bar
             <div className="flex items-center gap-2 flex-grow">
               <label className="input input-bordered border-primary-content bg-primary flex items-center gap-2 text-primary-content focus:bg-accent focus:text-accent-content w-full">
                 <Search className="primary-content" size={18} />
@@ -60,7 +60,7 @@ const OutgoingFriendRequestPage = () => {
                 />
               </label>
             </div>
-          </div>
+          </div> */}
           {/* grid*/}
           <div className="m-4 mr-8 w-11/12">
             {outgoingFriendRequests.length > 0 ? (

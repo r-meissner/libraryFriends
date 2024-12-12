@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Search } from "lucide-react";
+import { CirclePlus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context";
 import { getFriendsFromUser, searchFriendByEmail } from "../data/users";
@@ -45,7 +45,7 @@ const MyFriendsPage = () => {
             setResults(result);
           } else {
             setResults([]);
-          } 
+          }
         }
       } catch (error) {
         console.log("Error fetching search results", error);
@@ -54,12 +54,12 @@ const MyFriendsPage = () => {
     if (search.length>=4) {
       searchFriend();
     }
-  
+
     return () => {
       ignore = true;
     }
   }, [debouncedSearch])
-  
+
 
   const handleChange = (e) => {
     setSearch(e.target.value);
@@ -78,13 +78,13 @@ const MyFriendsPage = () => {
             {/* search bar */}
             <div className="flex items-center gap-2 flex-grow">
               <label className="input input-bordered border-primary-content bg-primary flex items-center gap-2 text-primary-content focus:bg-accent focus:text-accent-content w-full">
-                <Search className="primary-content" size={18} />
+                <CirclePlus className="primary-content" size={18} />
                 <input
                   name="search"
                   id="search"
                   value={search}
                   onChange={handleChange}
-                  placeholder="Search for User"
+                  placeholder="Add your friends by typing their email"
                   className="grow placeholder-accent "
                 />
               </label>
@@ -105,7 +105,8 @@ const MyFriendsPage = () => {
             )}
           {/* grid*/}
           <div className="m-4 mr-8 w-11/12">
-            {friends.map((friend) => {
+            {friends.length > 0 ? (
+            friends.map((friend) => {
               return (
                 <div className="grid grid-cols-8 gap-4 " key={friend._id._id}>
                   {/* avatar */}
@@ -137,8 +138,11 @@ const MyFriendsPage = () => {
                     </Link>
                   </div>
                 </div>
-              );
-            })}
+              )
+              })
+              ) : (
+                <p>You don't have any friends yet. Enter the mailadress of your friends above to add them. </p>
+                )}
           </div>
           <label
             htmlFor="my-drawer-2"
