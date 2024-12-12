@@ -4,29 +4,40 @@ import { useEffect, useState } from "react";
 import { getOutgoingFriendRequestsOfUser } from "../data/friendRequests";
 import { fetchFriendShipStatus } from "../data/users";
 import { useAuth } from "../context";
+import Loader from "../components/Loader";
 
 const OutgoingFriendRequestPage = () => {
-
   const [outgoingFriendRequests, setOutgoingFriendRequests] = useState([]);
   const { user: activeUser } = useAuth();
   const activeUserId = activeUser._id;
   const [isFriend, setIsFriend] = useState(false);
-
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchOutgoingFriendRequests = async (activeUserId) => {
-      const outgoingFriendRequests = await getOutgoingFriendRequestsOfUser(activeUserId);
-      setOutgoingFriendRequests(outgoingFriendRequests);
+      try {
+        setLoading(true);
+        const outgoingFriendRequests = await getOutgoingFriendRequestsOfUser(
+          activeUserId
+        );
+        setOutgoingFriendRequests(outgoingFriendRequests);
+      } catch (error) {
+        console.error("Error fetching outgoing friend requests", error);
+      } finally {
+        setLoading(false);
+      }
     };
-    fetchOutgoingFriendRequests(activeUserId);
-  }
-    , [activeUserId]);
 
-    console.log(outgoingFriendRequests);
+    if (activeUserId) {
+      fetchOutgoingFriendRequests(activeUserId);
+    }
+  }, [activeUserId]);
 
-    /* const userid = outgoingFriendRequests.targetUser._id; */
+  console.log(outgoingFriendRequests);
 
-   /*  useEffect(() => {
+  /* const userid = outgoingFriendRequests.targetUser._id; */
+
+  /*  useEffect(() => {
       const friendShipStatus = async () => {
         try {
           const response = await fetchFriendShipStatus(activeUser);
@@ -46,7 +57,16 @@ const OutgoingFriendRequestPage = () => {
       <div className="drawer lg:drawer-open">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col items-start justify-start w-full h-full">
-          {/* <div className="m-4 flex items-center space-x-4 w-1/2">
+          <div className="m-4 mr-8 w-11/12">
+            {/*Loader*/}
+            {loading ? (
+              <div className="flex justify-center items-center h-40">
+                <Loader />
+              </div>
+            ) : (
+              // Content when not loading
+              <>
+                {/* <div className="m-4 flex items-center space-x-4 w-1/2">
 
             search bar
             <div className="flex items-center gap-2 flex-grow">
@@ -61,80 +81,88 @@ const OutgoingFriendRequestPage = () => {
               </label>
             </div>
           </div> */}
-          {/* grid*/}
-          <div className="m-4 mr-8 w-11/12">
-            {outgoingFriendRequests.length > 0 ? (
-              outgoingFriendRequests.map((outgoingFriendRequest) => (
-            <div key={outgoingFriendRequest._id} className="grid grid-cols-8 gap-4 ">
-              {/* avatar */}
-              <div className="col-span-1 avatar flex justify-center items-center">
-                  <div className="w-24 rounded-full">
-                    <img src="libraryFriends-avatarFallback_darkTheme.svg" />
+                {/* grid*/}
+                <div className="m-4 mr-8 w-11/12">
+                  {outgoingFriendRequests.length > 0 ? (
+                    outgoingFriendRequests.map((outgoingFriendRequest) => (
+                      <div
+                        key={outgoingFriendRequest._id}
+                        className="grid grid-cols-8 gap-4 "
+                      >
+                        {/* avatar */}
+                        <div className="col-span-1 avatar flex justify-center items-center">
+                          <div className="w-24 rounded-full">
+                            <img src="libraryFriends-avatarFallback_darkTheme.svg" />
+                          </div>
+                        </div>
+
+                        {/* username */}
+                        <div className="col-span-4 flex justify-center items-center">
+                          <Link
+                            to={`/profile/${outgoingFriendRequest.targetUser._id}`}
+                          >
+                            <h2>{outgoingFriendRequest.targetUser.userName}</h2>
+                          </Link>
+                        </div>
+
+                        {/* status indicator */}
+                        <div className="col-span-2 flex justify-center items-center">
+                          {outgoingFriendRequest.status === "pending" ? (
+                            <div className="badge badge-primary badge-lg">
+                              waiting for
+                              {outgoingFriendRequest.targetUser.userName}'s
+                              answer
+                            </div>
+                          ) : (
+                            <div className="badge badge-primary badge-lg">
+                              friend request declined
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p>No outgoing friend requests</p>
+                  )}
                 </div>
-              </div>
-
-              {/* username */}
-              <div className="col-span-4 flex justify-center items-center">
-                <Link to={`/profile/${outgoingFriendRequest.targetUser._id}`}><h2>
-                {outgoingFriendRequest.targetUser.userName}
-                </h2></Link>
-              </div>
-
-              {/* status indicator */}
-              <div className="col-span-2 flex justify-center items-center">
-                {outgoingFriendRequest.status === "pending" ? (
-                  <div className="badge badge-primary badge-lg">waiting for {outgoingFriendRequest.targetUser.userName}'s answer</div>
-                ) : (
-                  <div className="badge badge-primary badge-lg">friend request declined</div>
-                )}
-              </div>
-            </div>
-
-            ))): (
-              <p>No outgoing friend requests</p>
+              </>
             )}
-
-
-
-
-
-
+            <label
+              htmlFor="my-drawer-2"
+              className="btn btn-primary drawer-button lg:hidden"
+            >
+              Open drawer
+            </label>
           </div>
-          <label
-            htmlFor="my-drawer-2"
-            className="btn btn-primary drawer-button lg:hidden"
-          >
-            Open drawer
-          </label>
+          </div>
+          <div className="drawer-side">
+            <label
+              htmlFor="my-drawer-2"
+              aria-label="close sidebar"
+              className="drawer-overlay"
+            ></label>
+            <ul className="menu bg-base-200 text-base-content min-h-full w-60 pt-4 p-2">
+              {/* Sidebar content here */}
+              <li>
+                <Link to="/friends">
+                  <h1>MY FRIENDS</h1>
+                </Link>
+              </li>
+              <li>
+                <Link to="/incomingfriendrequests">
+                  <h1>INCOMING FRIEND REQUESTS</h1>
+                </Link>
+              </li>
+              <li>
+                <Link to="/outgoingfriendrequests">
+                  <h1>OUTGOING FRIEND REQUESTS</h1>
+                </Link>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div className="drawer-side">
-          <label
-            htmlFor="my-drawer-2"
-            aria-label="close sidebar"
-            className="drawer-overlay"
-          ></label>
-          <ul className="menu bg-base-200 text-base-content min-h-full w-60 pt-4 p-2">
-            {/* Sidebar content here */}
-            <li>
-              <Link to="/friends">
-                <h1>MY FRIENDS</h1>
-              </Link>
-            </li>
-            <li>
-              <Link to="/incomingfriendrequests">
-                <h1>INCOMING FRIEND REQUESTS</h1>
-              </Link>
-            </li>
-            <li>
-              <Link to="/outgoingfriendrequests">
-                <h1>OUTGOING FRIEND REQUESTS</h1>
-              </Link>
-            </li>
-          </ul>
-        </div>
-      </div>
     </>
   );
 };
 
-export default OutgoingFriendRequestPage
+export default OutgoingFriendRequestPage;
