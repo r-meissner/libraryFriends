@@ -80,11 +80,13 @@ const OutgoingFriendRequestPage = () => {
                 </h1></Link>
               </div>
 
-              {/* button to user's books --> also leads to profile */}
+              {/* status indicator */}
               <div className="col-span-2 flex justify-center items-center">
+                {outgoingFriendRequest.status === "pending" ? (
                   <div className="badge badge-primary badge-lg">waiting for username&apos;s answer</div>
-                  <p>OR (conditional rendering)</p>
+                ) : (
                   <div className="badge badge-primary badge-lg">friend request declined</div>
+                )}
               </div>
             </div>
 

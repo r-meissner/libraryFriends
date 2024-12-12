@@ -14,7 +14,7 @@ export const getIncomingFriendRequestsOfUser = asyncHandler(async (req, res) => 
 export const getOutgoingFriendRequestsOfUser = asyncHandler(async (req, res) => {
     const { userId } = req.params;
     if (!userId) throw new ErrorResponse('UserId missing', 400);
-    const sentRequests = await FriendRequest.find({requestingUser: userId, status: 'pending'}).populate('targetUser','userName email avatar');
+    const sentRequests = await FriendRequest.find({requestingUser: userId}).populate('targetUser','userName email avatar');
     res.status(200).json({
         sentRequests: sentRequests,
     });
