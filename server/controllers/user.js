@@ -71,25 +71,45 @@ export const updateUser = asyncHandler(async (req, res, next) => {
 
 // POST a Book to User's Books List
 export const addBookToUser = asyncHandler(async (req, res) => {
-    const { id } = req.params; // User ID
-    const { bookId, owner, currentReader, borrowedDate, returnDate } = req.body; // added Additional fields
+    const { id } = req.params; // Borrower User ID
+    const { bookId, owner, currentReader, borrowedDate, returnDate } = req.body; // Additional fields
 
-    const user = await User.findById(id);
-    if (!user) throw new ErrorResponse("User not found", 404);
+    // Validate both users exist
+    const borrower = await User.findById(id); // Borrower's user object
+    if (!borrower) throw new ErrorResponse("Borrower not found", 404);
 
-    // Added the book to the user's books list with additional fields
-    user.books.push({
+    const lender = await User.findById(owner); // Owner's user object
+    if (!lender) throw new ErrorResponse("Owner not found", 404);
+
+    // Step 1: Add the book to the borrower's books list
+    borrower.books.push({
         _id: bookId,
         owner,
         currentReader,
         borrowedDate,
         returnDate,
     });
+    await borrower.save();
 
-    await user.save();
+    // Step 2: Update the currentReader, borrowedDate, and returnDate in the lender's books list
+    const bookToUpdate = lender.books.find((book) => book._id.toString() === bookId);
+    if (bookToUpdate) {
+        bookToUpdate.currentReader = currentReader;
+        bookToUpdate.borrowedDate = borrowedDate;
+        bookToUpdate.returnDate = returnDate;
+        await lender.save();
+    } else {
+        throw new ErrorResponse("Book not found in owner's books array", 404);
+    }
 
-    res.status(200).json(user);
+    res.status(200).json({
+        message: "Book successfully lent",
+        borrower,
+        lender,
+    });
 });
+
+
 
 
 // POST a Friend to User's Friends List
