@@ -78,8 +78,22 @@ const SharedLibraryPage = () => {
             <div key={index} className="grid grid-cols-8 grid-rows-2 gap-4 m-4">
             {/* book cover */}
             <div className="col-span-1 row-span-2">
-              <img src={book._id.cover} alt={book._id.title} />
-              </div>
+              <img
+                src={book._id?.cover || "https://via.placeholder.com/500?text=No+Cover"}
+                alt={`Cover of ${book._id?.title || "No Title"}`}
+                className="w-full h-full object-cover"
+                onLoad={(e) => {
+                  // Check if the image is too small or malformed
+                  if (e.target.naturalWidth < 100 || e.target.naturalHeight < 100) {
+                    e.target.src = "https://via.placeholder.com/500?text=No+Cover";
+                  }
+                }}
+                onError={(e) => {
+                  // Fallback to placeholder if image fails to load
+                  e.target.src = "https://via.placeholder.com/500?text=No+Cover";
+                }}
+              />
+            </div>
 
             {/* book title */}
             <div className="col-span-2 row-span-1">
@@ -118,7 +132,7 @@ const SharedLibraryPage = () => {
             {/* publisher & year */}
             <div className="col-start-2 col-span-2 row-span-1 flex items-start justify-evenly flex-col">
               <div>{`by ${book._id.author}`}</div>
-              <div>{book._id._year? book._id.year.substring(0,4):""}</div>
+              <div>{book._id.year.substring(0, 4)}</div>
             </div>
           </div>
           )
