@@ -5,7 +5,8 @@ import axiosInstance from "../axiosIntercepter";
 
 const MyBooksPage = () => {
   const [books, setBooks] = useState([]);
-  const [user, setUser] = useState(null);
+  const [searchTerm, setSearchTerm] = useState(""); // Corrected `setSearchTerm` usage
+  const [sortOption, setSortOption] = useState(""); // Added sorting state
 
   useEffect(() => {
     const fetchUserAndBooks = async () => {
@@ -13,7 +14,6 @@ const MyBooksPage = () => {
         // Fetch logged-in user info
         const userResponse = await axiosInstance.get("/api/auth/me");
         const loggedInUser = userResponse.data;
-        setUser(loggedInUser);
 
         // Fetch user's books
         const booksResponse = await axiosInstance.get(
@@ -22,12 +22,12 @@ const MyBooksPage = () => {
 
         console.log("Books Response Data:", booksResponse.data);
 
-        // Filter books that are NOT borrowed (currentReader field is absent or empty)
+        // Ensure API filtering only includes books owned by the user (not borrowed)
         const ownedBooks = booksResponse.data.filter(
           (book) => !book.currentReader || Object.keys(book.currentReader).length === 0
         );
 
-        setBooks(ownedBooks);
+        setBooks(ownedBooks); // Set only owned books
         console.log("Filtered Owned Books:", ownedBooks);
       } catch (error) {
         console.error("Error fetching user or books:", error);
@@ -37,23 +37,53 @@ const MyBooksPage = () => {
     fetchUserAndBooks();
   }, []);
 
+  // Function to sort books
+  const sortBooks = (books) => {
+    if (sortOption === "Title") {
+      return [...books].sort((a, b) => a._id.title.localeCompare(b._id.title));
+    }
+    if (sortOption === "Author") {
+      return [...books].sort((a, b) =>
+        a._id.author.localeCompare(b._id.author)
+      );
+    }
+    if (sortOption === "Year") {
+      return [...books].sort((a, b) => (a._id.year || 0) - (b._id.year || 0));
+    }
+    return books;
+  };
+
+  // Function to filter books by search term
+  const filterBooks = (books) => {
+    return books.filter((book) =>
+      book._id.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  };
+
+  // Combine sorting and filtering logic
+  const displayedBooks = sortBooks(filterBooks(books));
+
   return (
     <>
       <div className="drawer lg:drawer-open">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col items-start justify-start w-full h-full">
           <div className="m-4 flex items-center space-x-4 w-1/2">
-            {/* sort by select */}
-            <select className="select select-primary max-w-xs">
-              <option disabled selected>
-                sort by
+            {/* Sort by select */}
+            <select
+              className="select select-primary max-w-xs"
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+            >
+              <option value="" disabled>
+                Sort by
               </option>
-              <option>Title</option>
-              <option>Author</option>
-              <option>Year</option>
+              <option value="Title">Title</option>
+              <option value="Author">Author</option>
+              <option value="Year">Year</option>
             </select>
 
-            {/* search bar */}
+            {/* Search bar */}
             <div className="flex items-center gap-2 flex-grow">
               <label className="input input-bordered border-primary-content bg-primary flex items-center gap-2 text-primary-content focus:bg-accent focus:text-accent-content w-full">
                 <Search className="primary-content" size={18} />
@@ -61,18 +91,28 @@ const MyBooksPage = () => {
                   name="search"
                   id="search"
                   placeholder="Search for Book"
-                  className="grow placeholder-accent "
+                  className="grow placeholder-accent"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </label>
             </div>
+
+            {/* Add Book Button */}
+            <Link to="/addbook">
+              <button className="btn btn-primary">Add a Book</button>
+            </Link>
+
           </div>
 
           {/* Book grid */}
           <div className="m-4 mr-8 w-11/12">
-            {/* Dynamic Book Entries */}
-            {books.length > 0 &&
-              books.map((book) => (
-                <div key={book._id._id} className="grid grid-cols-8 grid-rows-2 gap-4 mb-4">
+            {displayedBooks.length > 0 ? (
+              displayedBooks.map((book) => (
+                <div
+                  key={book._id._id}
+                  className="grid grid-cols-8 grid-rows-2 gap-4 mb-4"
+                >
                   <div className="col-span-1 row-span-2">
                     <img
                       src={book._id?.cover || "https://via.placeholder.com/500?text=No+Cover"}
@@ -98,9 +138,7 @@ const MyBooksPage = () => {
 
                   {/* Book location */}
                   <div className="col-span-2 row-span-2 flex items-center justify-center flex-wrap">
-                    <div className="badge badge-primary badge-lg">at my home</div>
-                    <p>OR (conditional rendering)</p>
-                    <div className="badge badge-primary badge-lg">borrowed by username</div>
+                    <div className="badge badge-primary badge-lg">At My Home</div>
                   </div>
 
                   {/* Delete book button */}
@@ -114,32 +152,10 @@ const MyBooksPage = () => {
                     <div>published {book._id.year || "Unknown Year"}</div>
                   </div>
                 </div>
-              ))}
-
-            {/* Mock Data */}
-            <div className="grid grid-cols-8 grid-rows-2 gap-4">
-              <div className="col-span-1 row-span-2">
-                <img
-                  src="https://ia801504.us.archive.org/view_archive.php?archive=/22/items/olcovers562/olcovers562-L.zip&file=5621267-L.jpg"
-                  alt="book cover title"
-                />
-              </div>
-              <div className="col-span-4 row-span-1">
-                <h1>Book Title</h1>
-              </div>
-              <div className="col-span-2 row-span-2 flex items-center justify-center flex-wrap">
-                <div className="badge badge-primary badge-lg">at my home</div>
-                <p>OR (conditional rendering)</p>
-                <div className="badge badge-primary badge-lg">borrowed by username</div>
-              </div>
-              <div className="col-span-1 row-span-2 flex items-center justify-center">
-                <button className="btn btn-warning btn-xs">Delete book</button>
-              </div>
-              <div className="col-span-4 row-span-1 flex items-start justify-evenly flex-col">
-                <div>by Author</div>
-                <div>published 1999</div>
-              </div>
-            </div>
+              ))
+            ) : (
+              <p>No books found.</p>
+            )}
           </div>
 
           <label
@@ -175,7 +191,7 @@ const MyBooksPage = () => {
             </li>
             <li>
               <Link to="/bookrequests">
-                <h1>BOOKREQUESTS</h1>
+                <h1>BOOK REQUESTS</h1>
               </Link>
             </li>
           </ul>

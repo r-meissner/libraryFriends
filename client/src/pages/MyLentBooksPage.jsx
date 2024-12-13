@@ -95,7 +95,10 @@ const MyLentBooksPage = () => {
                   {/* book location */}
                   <div className="col-span-2 row-span-1 flex items-center justify-center flex-wrap">
                     <div className="badge badge-primary badge-lg">
-                      lent to {book.currentReader?.userName || "Unknown"}
+                      Lent To: {book.currentReader?.userName || "Unknown"}
+                    </div>
+                    <div className="badge badge-primary badge-lg">
+                      Owned by: Me
                     </div>
                   </div>
 
@@ -113,7 +116,7 @@ const MyLentBooksPage = () => {
                   {/* borrowed since */}
                   <div className="col-span-2 row-span-1 flex items-center justify-center flex-wrap">
                     <div className="badge badge-primary badge-lg">
-                      since {new Date(book.borrowedDate).toLocaleDateString()}
+                      Since: {new Date(book.borrowedDate).toLocaleDateString()}
                     </div>
                   </div>
                 </div>

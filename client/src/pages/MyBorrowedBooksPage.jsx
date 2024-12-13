@@ -106,7 +106,7 @@ const MyBorrowedBooksPage = () => {
                   {/* book owner */}
                   <div className="col-span-3 row-span-1 flex items-center justify-center flex-wrap">
                     <div className="badge badge-primary badge-lg">
-                      owned by {book.owner?.userName || "Unknown"}
+                      Owned by: {book.owner?.userName || "Unknown"}
                     </div>
                   </div>
 
@@ -119,10 +119,10 @@ const MyBorrowedBooksPage = () => {
                   {/* borrowed since and return date */}
                   <div className="col-start-6 col-span-3 row-span-2 flex flex-col items-center justify-center flex-wrap">
                     <div className="badge badge-primary badge-lg mb-1">
-                      borrowed since {new Date(book.borrowedDate).toLocaleDateString()}
+                      Borrowed Since: {new Date(book.borrowedDate).toLocaleDateString()}
                     </div>
                     <div className="badge badge-primary badge-lg">
-                      return date {new Date(book.returnDate).toLocaleDateString()}
+                      Return Date: {new Date(book.returnDate).toLocaleDateString()}
                     </div>
                   </div>
 
