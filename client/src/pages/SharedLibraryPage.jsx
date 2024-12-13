@@ -39,8 +39,7 @@ const SharedLibraryPage = () => {
               <option>Title</option>
               <option>Author</option>
               <option>Year</option>
-            </select>
- */}
+            </select>*/}
       {/* search bar */}
       {/* <div className="flex items-center gap-2 flex-grow">
               <label className="input input-bordered border-primary-content bg-primary flex items-center gap-2 text-primary-content focus:bg-accent focus:text-accent-content w-full">
@@ -57,12 +56,14 @@ const SharedLibraryPage = () => {
 
       {/* book grid*/}
       <div className="m-4 mr-8 w-11/12">
-        {books.map((book) => {
-          return (<div className="grid grid-cols-8 grid-rows-2 gap-4 m-4">
+      {
+        books.map((book) => {
+          return (
+            <div className="grid grid-cols-8 grid-rows-2 gap-4 m-4">
             {/* book cover */}
             <div className="col-span-1 row-span-2">
               <img src={book._id.cover} alt={book._id.title} />
-            </div>
+              </div>
 
             {/* book title */}
             <div className="col-span-2 row-span-1">
@@ -70,35 +71,38 @@ const SharedLibraryPage = () => {
             </div>
 
             {/* location of book */}
-            <div className="col-span-2 row-span-2 flex items-center justify-center flex-wrap">
+            {book.owner && <div className="col-span-2 row-span-2 flex items-center justify-center flex-wrap">
               <div className="badge badge-primary badge-lg">
-                {`owned by ${book.owner}`}
+                {book.owner._id===user._id ? 'owned by you':`owned by ${book.owner.userName}`}
               </div>
-            </div>
+              </div>}
 
             {/* availability */}
             <div className="col-span-2 row-span-2 flex items-center justify-center flex-wrap">
-              {book.owner === book.currentReader ? (
-                <div className="badge badge-primary badge-lg">available</div>
+              {book.currentReader ? (
+                <div className="badge badge-primary badge-lg">not available</div>
               ) : (
                 <div className="badge badge-primary badge-lg">
-                  not available
+                  available
                 </div>
               )}
             </div>
 
             {/* request book button */}
+            
+            {book.owner?._id!==user._id && 
             <div className="col-span-1 row-span-2 flex items-center justify-center">
               <button className="btn btn-primary btn-xs">Request book</button>
-            </div>
-
+            </div>}
             {/* publisher & year */}
-            <div className="col-span-2 row-span-1 flex items-start justify-evenly flex-col">
+            <div className="col-start-2 col-span-2 row-span-1 flex items-start justify-evenly flex-col">
               <div>{`by ${book._id.author}`}</div>
               <div>{book.id_year? book._id.year.substring(0,4):""}</div>
             </div>
-          </div>);
-        })}
+          </div>
+          )
+        })
+      }
       </div>
     </div>
   );
