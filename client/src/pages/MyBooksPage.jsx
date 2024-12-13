@@ -63,12 +63,6 @@ const MyBooksPage = () => {
   // Combine sorting and filtering logic
   const displayedBooks = sortBooks(filterBooks(books));
 
-  // Dynamic URL for the add book page
-  const addBookURL =
-    process.env.NODE_ENV === "production"
-      ? "https://libraryfriends.onrender.com/addbook"
-      : "http://localhost:5173/addbook";
-
   return (
     <>
       <div className="drawer lg:drawer-open">
@@ -120,7 +114,7 @@ const MyBooksPage = () => {
                   className="grid grid-cols-8 grid-rows-2 gap-4 mb-4"
                 >
                   <div className="col-span-1 row-span-2">
-                  <img
+                    <img
                       src={book._id?.cover || "https://via.placeholder.com/500?text=No+Cover"}
                       alt={`Cover of ${book._id?.title || "No Title"}`}
                       className="w-full h-full object-cover"
