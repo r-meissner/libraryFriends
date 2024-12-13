@@ -3,7 +3,7 @@ import { getBookRequestsOfUser, createBookRequest, deleteBookRequest, updateBook
 
 const bookRequestRouter = Router();
 
-bookRequestRouter.route('/').get(getBookRequestsOfUser).post(createBookRequest);
+bookRequestRouter.route('/:userId').get(getBookRequestsOfUser).post(createBookRequest);
 bookRequestRouter.route('/:id').put(updateBookRequest).delete(deleteBookRequest);
 
 export default bookRequestRouter;
