@@ -63,6 +63,12 @@ const MyBooksPage = () => {
   // Combine sorting and filtering logic
   const displayedBooks = sortBooks(filterBooks(books));
 
+  // Dynamic URL for the add book page
+  const addBookURL =
+    process.env.NODE_ENV === "production"
+      ? "https://libraryfriends.onrender.com/addbook"
+      : "http://localhost:5173/addbook";
+
   return (
     <>
       <div className="drawer lg:drawer-open">
@@ -97,6 +103,12 @@ const MyBooksPage = () => {
                 />
               </label>
             </div>
+
+            {/* Add Book Button */}
+            <Link to="/addbook">
+              <button className="btn btn-primary">Add a Book</button>
+            </Link>
+
           </div>
 
           {/* Book grid */}
@@ -132,7 +144,7 @@ const MyBooksPage = () => {
 
                   {/* Book location */}
                   <div className="col-span-2 row-span-2 flex items-center justify-center flex-wrap">
-                    <div className="badge badge-primary badge-lg">at my home</div>
+                    <div className="badge badge-primary badge-lg">At My Home</div>
                   </div>
 
                   {/* Delete book button */}
