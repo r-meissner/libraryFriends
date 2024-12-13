@@ -2,19 +2,24 @@ import { Search } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from '../context'
 import { getSharedBooks } from "../data/users";
+import { createBookRequest, fetchBookRequestsOfUser } from "../data/bookRequests";
 
 const SharedLibraryPage = () => {
   const [books, setBooks] = useState([]);
+  const [requests, setRequests] = useState([]);
   const { user } = useAuth();
 
   useEffect(() => {
     let ignore = false;
     const getBooks = async () => {
       try {
-        const data = await getSharedBooks(user._id);
-        console.log(data);
+        const sharedBooks = await getSharedBooks(user._id);
+        const requestedBooks = await fetchBookRequestsOfUser(user._id);
+        const onlyRequestedBooks = requestedBooks.sentRequests.map(request => request.book._id)
+        console.log(sharedBooks);
         if (!ignore) {
-          setBooks(data)
+          setBooks(sharedBooks)
+          setRequests(onlyRequestedBooks)
         }
       } catch (error) {
         console.log("Error fetching books", error)
@@ -27,6 +32,17 @@ const SharedLibraryPage = () => {
     }
   }, [])
   
+  const handleRequest = async (targetBook) => {
+    const requestBody = {
+      owner: targetBook.owner,
+      book: targetBook._id._id,
+      requestingUser: user._id,
+      status: "open"
+    }
+    const res = await createBookRequest(requestBody, user._id);
+    setRequests([...requests, targetBook._id._id])
+    console.log(res);
+  }
 
   return (
     <div>
@@ -57,9 +73,9 @@ const SharedLibraryPage = () => {
       {/* book grid*/}
       <div className="m-4 mr-8 w-11/12">
       {
-        books.map((book) => {
+        books.map((book, index) => {
           return (
-            <div className="grid grid-cols-8 grid-rows-2 gap-4 m-4">
+            <div key={index} className="grid grid-cols-8 grid-rows-2 gap-4 m-4">
             {/* book cover */}
             <div className="col-span-1 row-span-2">
               <img src={book._id.cover} alt={book._id.title} />
@@ -71,14 +87,14 @@ const SharedLibraryPage = () => {
             </div>
 
             {/* location of book */}
-            {book.owner && <div className="col-span-2 row-span-2 flex items-center justify-center flex-wrap">
+            {book.owner && <div className="col-start-4 col-span-2 row-span-2 flex items-center justify-center flex-wrap">
               <div className="badge badge-primary badge-lg">
                 {book.owner._id===user._id ? 'owned by you':`owned by ${book.owner.userName}`}
               </div>
               </div>}
 
             {/* availability */}
-            <div className="col-span-2 row-span-2 flex items-center justify-center flex-wrap">
+            <div className="col-start-6 col-span-2 row-span-2 flex items-center justify-center flex-wrap">
               {book.currentReader ? (
                 <div className="badge badge-primary badge-lg">not available</div>
               ) : (
@@ -90,14 +106,19 @@ const SharedLibraryPage = () => {
 
             {/* request book button */}
             
-            {book.owner?._id!==user._id && 
-            <div className="col-span-1 row-span-2 flex items-center justify-center">
-              <button className="btn btn-primary btn-xs">Request book</button>
-            </div>}
+            {book.owner?._id !== user._id && (
+                  <div className="col-start-8 col-span-1 row-span-2 flex items-center justify-center">
+                    {!requests.includes(book._id._id) ? (
+                      <button className="btn btn-primary btn-xs" onClick={() => handleRequest(book)}>Request book</button>
+                    ) : (
+                      <button className="btn btn-primary btn-xs" disabled>Requested</button>
+                    )}
+                  </div>
+                )}
             {/* publisher & year */}
             <div className="col-start-2 col-span-2 row-span-1 flex items-start justify-evenly flex-col">
               <div>{`by ${book._id.author}`}</div>
-              <div>{book.id_year? book._id.year.substring(0,4):""}</div>
+              <div>{book._id._year? book._id.year.substring(0,4):""}</div>
             </div>
           </div>
           )
