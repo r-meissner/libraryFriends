@@ -1,6 +1,6 @@
 import { Router } from "express";
 import validateJOI from "../middlewares/validateJoi.js";
-import { userSchema } from "../joi/schemas.js";
+import { userSchema, updateUserSchema } from "../joi/schemas.js";
 import {
     getUserById,
     searchUserByEmail,
@@ -21,7 +21,7 @@ userRouter.route('/search').post(searchUserByEmail);
 // User routes
 userRouter.route('/:id')
     .get(getUserById) // Get user by ID
-    .put(validateJOI(userSchema), updateUser) // Update user
+    .put(validateJOI(updateUserSchema), updateUser) // Update user
     .delete(deleteUser); // Delete user
 
 // User books and friends
