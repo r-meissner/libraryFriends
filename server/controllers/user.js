@@ -76,7 +76,7 @@ export const addBookToUser = asyncHandler(async (req, res) => {
     console.log(req.body);
 
     // Validate both users exist
-    const borrower = await User.findById(currentReader); // Borrower's user object
+    const borrower = await User.findById(id); // Borrower's user object
     if (!borrower) throw new ErrorResponse("Borrower not found", 404);
 
 
@@ -120,7 +120,7 @@ export const addBookToUser = asyncHandler(async (req, res) => {
         await lender.save();
     } else {
         throw new ErrorResponse("Book not found in owner's books array", 404);
-    } 
+    }
 
     res.status(200).json({
         message: "Book successfully lent",
