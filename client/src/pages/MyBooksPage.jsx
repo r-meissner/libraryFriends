@@ -143,7 +143,7 @@ const MyBooksPage = () => {
 
                   {/* Delete book button */}
                   <div className="col-span-1 row-span-2 flex items-center justify-center">
-                    <button className="btn btn-warning btn-xs">Delete book</button>
+                    {/* <button className="btn btn-warning btn-xs">Delete book</button> */}
                   </div>
 
                   {/* Publisher & year */}
