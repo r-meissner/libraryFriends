@@ -130,7 +130,7 @@ const MyFriendsPage = () => {
                         src={
                           friend.avatar
                             ? friend.avatar
-                            : `https://robohash.org/${friend._id._id}?set=set4.png`
+                            : "libraryFriends-avatarFallback_darkTheme.svg"
                         }
                       />
                     </div>
