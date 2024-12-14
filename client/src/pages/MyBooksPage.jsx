@@ -27,7 +27,7 @@ const MyBooksPage = () => {
           (book) => !book.currentReader || Object.keys(book.currentReader).length === 0
         );
 
-        setBooks(ownedBooks); // Set only owned books
+        setBooks(booksResponse.data); // Set only owned books
         console.log("Filtered Owned Books:", ownedBooks);
       } catch (error) {
         console.error("Error fetching user or books:", error);

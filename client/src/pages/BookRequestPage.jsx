@@ -2,10 +2,7 @@ import { Link } from "react-router-dom";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { fetchBookRequestsOfUser } from "../data/bookRequests";
-/* import {
-  acceptFriendRequest,
-  declineFriendRequest,
-} from "../data/friendRequests"; */
+import { setBookRequestToClosed, handleAcceptedBookRequest } from "../data/bookRequests";
 import { useAuth } from "../context";
 import Loader from "../components/Loader";
 
@@ -20,6 +17,8 @@ const BookRequestPage = () => {
   const activeUserId = activeUser._id;
   /* const [bookRequestStatus, setBookRequestStatus] = useState("open"); */
   const [loading, setLoading] = useState(false);
+
+
 
   const getBookRequestsOfUser = async (activeUserId) => {
     try {
@@ -42,35 +41,38 @@ const BookRequestPage = () => {
 
   console.log(bookRequests);
 
-  /* const acceptFriendRequestHandler = async (
-    friendRequestId,
-    requestingUserId,
-    targetUserId
-  ) => {
-    try {
-      console.log("accepting friend request with ID ", friendRequestId);
-      await acceptFriendRequest(
-        friendRequestId,
-        requestingUserId,
-        targetUserId
-      );
-      fetchIncomingFriendRequests(activeUserId);
-      setFriendRequestStatus("accepted");
-    } catch (error) {
-      console.error("Error accepting friend request", error);
-    }
-  }; */
 
-  /*  const declineFriendRequestHandler = async (friendRequestId) => {
+
+  const handleBookRequestClose = async (bookRequestId) => {
     try {
-      console.log("declining friend request with ID ", friendRequestId);
-      await declineFriendRequest(friendRequestId);
-      fetchIncomingFriendRequests(activeUserId);
-      setFriendRequestStatus("declined");
+      console.log("declining book request with ID ", bookRequestId);
+      const requestBody = { status: "closed" };
+      await setBookRequestToClosed(bookRequestId, requestBody);
+      getBookRequestsOfUser(activeUserId);
     } catch (error) {
       console.error("Error declining friend request", error);
     }
-  }; */
+  };
+
+  const handleBookRequestAccept = async (bookRequest, activeUserId) => {
+    try {
+      const threeMonthsFromNow = new Date();
+      threeMonthsFromNow.setMonth(threeMonthsFromNow.getMonth() + 3);
+
+      const requestBody = {
+        bookId: bookRequest.book._id,
+        owner: bookRequest.owner,
+        currentReader: bookRequest.requestingUser._id,
+        borrowedDate: new Date(),
+        returnDate: threeMonthsFromNow,
+  };
+      console.log("request Body", requestBody);
+      await handleAcceptedBookRequest(requestBody, activeUserId);
+    }
+    catch (error) {
+      console.error("Error accepting book request", error);
+    }
+  }
 
   return (
     <>
@@ -114,12 +116,12 @@ const BookRequestPage = () => {
 
                           <img
                             src={
-                              bookRequest._id?.cover ||
+                              bookRequest.book.cover ||
                               "https://via.placeholder.com/500?text=No+Cover"
                             }
-                            alt={`Cover of ${bookRequest._id?.title || "No Title"}`}
+                            alt={`Cover of ${bookRequest.book.title || "No Title"}`}
                             className="w-full h-full object-cover"
-                            onLoad={(e) => {
+                             onLoad={(e) => {
                               // Check if the image is too small or malformed
                               if (
                                 e.target.naturalWidth < 100 ||
@@ -146,13 +148,9 @@ const BookRequestPage = () => {
                         <div className="col-span-2 row-span-2 flex items-center justify-center">
                           <button
                             className="btn btn-success btn-sm"
-                            /* onClick={() =>
-                              acceptFriendRequestHandler(
-                                incomingFriendRequest._id,
-                                activeUserId,
-                                incomingFriendRequest.requestingUser._id
-                              )
-                            } */
+                            onClick={() => {
+                              handleBookRequestClose(bookRequest._id); handleBookRequestAccept(bookRequest, activeUserId)
+                            }}
                           >
                             accept to lend this book
                           </button>
@@ -162,11 +160,11 @@ const BookRequestPage = () => {
                         <div className="col-span-2 row-span-2 flex items-center justify-center">
                           <button
                             className="btn btn-warning btn-sm"
-                            /* onClick={() =>
-                              declineFriendRequestHandler(
-                                incomingFriendRequest._id
+                             onClick={() =>
+                              handleBookRequestClose(
+                                bookRequest._id
                               )
-                            } */
+                            }
                           >
                             decline to lend this book
                           </button>
