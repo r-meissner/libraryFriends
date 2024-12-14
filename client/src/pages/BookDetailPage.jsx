@@ -27,7 +27,7 @@ const BookDetailPage = () => {
   return (
     <div className="flex h-screen flex-row-reverse">
       {/* Sidebar */}
-      <div className="bg-base-200 w-60 p-4">
+      {/* <div className="bg-base-200 w-60 p-4">
         <h2 className="text-lg font-bold">Owned by friends</h2>
         <ul className="menu menu-compact">
           <li>
@@ -36,7 +36,7 @@ const BookDetailPage = () => {
             </Link>
           </li>
         </ul>
-      </div>
+      </div> */}
 
       {/* Main content */}
       <div className="flex-1 bg-base-100 p-6">
