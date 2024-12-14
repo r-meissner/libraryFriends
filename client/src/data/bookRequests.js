@@ -20,4 +20,27 @@ export const createBookRequest = async (requestBody, activeUserId) => {
 }
 
 
+export const handleAcceptedBookRequest = async (requestBody, activeUserId) => {
+  try {
+
+    //add book to active user's/borrower's library
+    const res = await axiosInstance.post(`/api/users/${activeUserId}/books`,
+      requestBody
+    );
+
+    return res.data;
+  } catch (error) {
+    console.error("Error accepting book request", error);
+  }
+}
+
+export const setBookRequestToClosed = async (bookRequestId, requestBody) => {
+  try {
+    //set book request status to closed
+    const res = await axiosInstance.put(`${baseURL}/${bookRequestId}`, requestBody);
+    return res.data;
+  } catch (error) {
+    console.error("Error accepting book request", error);
+  }
+}
 
