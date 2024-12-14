@@ -20,11 +20,11 @@ export const createBookRequest = async (requestBody, activeUserId) => {
 }
 
 
-export const handleAcceptedBookRequest = async (requestBody, activeUserId) => {
+export const handleAcceptedBookRequest = async (requestBody, currentReaderId) => {
   try {
 
     //add book to active user's/borrower's library
-    const res = await axiosInstance.post(`/api/users/${activeUserId}/books`,
+    const res = await axiosInstance.post(`/api/users/${currentReaderId}/books`,
       requestBody
     );
 

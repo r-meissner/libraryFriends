@@ -93,22 +93,6 @@ export const addBookToUser = asyncHandler(async (req, res) => {
     });
     await borrower.save();
 
-    // Step 2: Update the currentReader, borrowedDate, and returnDate in the lender's books list
-   /*  const updateResult = await lender.updateOne(
-        { "books._id": bookId }, // Find the lender where the book exists with the specific bookId
-        {
-            $set: {
-                "books.$.currentReader": currentReader,
-                "books.$.borrowedDate": borrowedDate,
-                "books.$.returnDate": returnDate,
-            },
-        }
-    );
-
-    if (updateResult.modifiedCount === 0) {
-        throw new ErrorResponse("Book not found in owner's books array", 404);
-    } */
-
 
    const bookToUpdate = lender.books.find((book) => book._id.toString() === bookId);
     console.log(bookToUpdate);

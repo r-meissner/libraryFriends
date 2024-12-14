@@ -54,10 +54,12 @@ const BookRequestPage = () => {
     }
   };
 
-  const handleBookRequestAccept = async (bookRequest, activeUserId) => {
+  const handleBookRequestAccept = async (bookRequest) => {
     try {
       const threeMonthsFromNow = new Date();
       threeMonthsFromNow.setMonth(threeMonthsFromNow.getMonth() + 3);
+
+      const currentReaderId = bookRequest.requestingUser._id;
 
       const requestBody = {
         bookId: bookRequest.book._id,
@@ -67,7 +69,7 @@ const BookRequestPage = () => {
         returnDate: threeMonthsFromNow,
   };
       console.log("request Body", requestBody);
-      await handleAcceptedBookRequest(requestBody, activeUserId);
+      await handleAcceptedBookRequest(requestBody, currentReaderId);
     }
     catch (error) {
       console.error("Error accepting book request", error);
