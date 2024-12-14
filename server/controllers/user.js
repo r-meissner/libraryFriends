@@ -138,21 +138,35 @@ export const deleteUser = asyncHandler(async (req, res, next) => {
 export const sharedBooks = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     const user = await User.findById(id).populate({
-        path: 'books',
-        populate: {
-            path: '_id',
-            model: 'Book'
-          }
-      }).populate({
-        path: 'friends._id',
-        populate: {
-          path: 'books',
-          populate: {
-            path: '_id',
-            model: 'Book'
-          }
+      path: 'books',
+      populate: [
+        {
+          path: '_id',
+          model: 'Book'
         },
-      });
+        {
+          path: 'owner',
+          model: 'User',
+          select: 'userName'
+        }
+      ]
+    }).populate({
+      path: 'friends._id',
+      populate: {
+        path: 'books',
+        populate: [
+          {
+            path: '_id',
+            model: 'Book'
+          },
+          {
+            path: 'owner',
+            model: 'User',
+            select: 'userName'
+          }
+        ]
+      }
+    });
   
     if (!user) {
       return next(new ErrorResponse("User not found", 404));

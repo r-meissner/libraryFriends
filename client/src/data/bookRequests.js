@@ -10,5 +10,14 @@ export const fetchBookRequestsOfUser = async (activeUserId) => {
   }
 }
 
+export const createBookRequest = async (requestBody, activeUserId) => {
+  try {
+    const res = await axiosInstance.post(`${baseURL}/${activeUserId}`, requestBody);
+    return res.data;
+  } catch (error) {
+    console.error("Error creating bookrequest",error);
+  }
+}
+
 
 
